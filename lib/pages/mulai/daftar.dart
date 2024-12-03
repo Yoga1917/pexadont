@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pexadont/pages/mulai/login.dart';
+import 'package:http/http.dart' as http;
 import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';
 import 'package:pexadont/pages/pengaturan/syarat.dart';
 
@@ -11,6 +15,7 @@ class DaftarPage extends StatefulWidget {
 }
 
 class _DaftarPageState extends State<DaftarPage> {
+  String buttonText = 'Daftar';
   final TextEditingController nikController = TextEditingController();
   final TextEditingController namaController = TextEditingController();
   final TextEditingController nomorRumahController = TextEditingController();
@@ -18,8 +23,101 @@ class _DaftarPageState extends State<DaftarPage> {
   final TextEditingController tanggalLahirController = TextEditingController();
   final TextEditingController jenisKelaminController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController ulangiPasswordController =
-      TextEditingController();
+  final TextEditingController ulangiPasswordController = TextEditingController();
+  
+  File? _image; // Variable to hold the selected image
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _submitData() {
+    setState(() {
+      buttonText = 'Register...';
+    });
+
+    if(
+      (nikController.text == "") ||
+      (namaController.text == "") ||
+      (nomorRumahController.text == "") ||
+      (nomorTeleponController.text == "") ||
+      (tanggalLahirController.text == "") ||
+      (jenisKelaminController.text == "") ||
+      (passwordController.text == "") ||
+      (ulangiPasswordController.text == "") ||
+      (_image == null)
+    ){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Isi data yang diperlukan!')),
+      );
+
+      setState(() {
+        buttonText = 'Daftar';
+      });
+    }else{
+      if(passwordController.text == ulangiPasswordController.text){
+        _register();
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Konfirmasi Password Tidak Cocok!')),
+        );
+
+        setState(() {
+          buttonText = 'Daftar';
+        });
+      }
+    }
+  }
+
+  Future<void> _register() async {
+    var request = http.MultipartRequest('POST', Uri.parse('https://pexadont.agsa.site/api/warga/simpan'));
+    request.fields['nik'] = nikController.text;
+    request.fields['nama'] = namaController.text;
+    request.fields['tgl_lahir'] = tanggalLahirController.text;
+    request.fields['jenis_kelamin'] = jenisKelaminController.text;
+    request.fields['no_rumah'] = nomorRumahController.text;
+    request.fields['no_wa'] = nomorTeleponController.text;
+    request.fields['password'] = passwordController.text;
+    request.fields['status'] = "0";
+    request.files.add(await http.MultipartFile.fromPath('foto', _image!.path));
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    var responseData = jsonDecode(response.body);
+
+    if (responseData['status'] == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Pendaftaran warga berhasil')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      if(responseData['data']['foto'] != null){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData['data']['foto'])),
+        );
+      }
+      if(responseData['data']['nik'] != null){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData['data']['nik'])),
+        );
+      }
+
+      setState(() {
+        buttonText = 'Daftar';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +160,7 @@ class _DaftarPageState extends State<DaftarPage> {
             child: Center(
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Container(
@@ -91,9 +187,7 @@ class _DaftarPageState extends State<DaftarPage> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Container(
@@ -112,12 +206,11 @@ class _DaftarPageState extends State<DaftarPage> {
                       ),
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: 30),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: nikController,
                               cursorColor: Color(0xff30C083),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.credit_card),
@@ -138,12 +231,11 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: namaController,
                               cursorColor: Color(0xff30C083),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.account_box),
@@ -164,12 +256,11 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: nomorRumahController,
                               cursorColor: Color(0xff30C083),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.home),
@@ -190,12 +281,11 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: nomorTeleponController,
                               cursorColor: Color(0xff30C083),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.call),
@@ -216,12 +306,11 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: tanggalLahirController,
                               readOnly: true,
                               onTap: () async {
                                 DateTime? pickedDate = await showDatePicker(
@@ -229,21 +318,22 @@ class _DaftarPageState extends State<DaftarPage> {
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime(1900),
                                   lastDate: DateTime(2100),
-                                  builder:
-                                      (BuildContext context, Widget? child) {
+                                  builder: (BuildContext context, Widget? child) {
                                     return Theme(
                                       data: ThemeData.light().copyWith(
                                         primaryColor: Color(0xff30C083),
-                                        colorScheme: ColorScheme.light(
-                                            primary: Color(0xff30C083)),
-                                        buttonTheme: ButtonThemeData(
-                                            textTheme: ButtonTextTheme.primary),
+                                        colorScheme: ColorScheme.light(primary: Color(0xff30C083)),
+                                        buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
                                       ),
                                       child: child ?? Container(),
                                     );
                                   },
                                 );
-                                if (pickedDate != null) {}
+                                if (pickedDate != null) {
+                                  setState(() {
+                                    tanggalLahirController.text = "${pickedDate.toLocal()}".split(' ')[0];
+                                  });
+                                }
                               },
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.calendar_today),
@@ -264,9 +354,7 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: DropdownButtonFormField<String>(
@@ -288,7 +376,7 @@ class _DaftarPageState extends State<DaftarPage> {
                                 ),
                               ),
                               items: <String>[
-                                'Laki-laki',
+                                'Laki-Laki',
                                 'Perempuan'
                               ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
@@ -296,68 +384,49 @@ class _DaftarPageState extends State<DaftarPage> {
                                   child: Text(value),
                                 );
                               }).toList(),
-                              onChanged: (String? newValue) {},
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  jenisKelaminController.text = newValue!;
+                                });
+                              },
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextFormField(
-                              readOnly: true,
-                              onTap: () {},
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.upload_file),
-                                labelText: 'Upload Foto',
-                                floatingLabelStyle: const TextStyle(
-                                  color: Colors.black,
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10)
                                 ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.upload_file),
+                                    SizedBox(width: 10),
+                                    Text("Upload Foto")
+                                  ],
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xff30C083),
-                                    width: 2,
-                                  ),
-                                ),
+                              )
+                            ),
+                          ),
+                          if (_image != null) // Display image preview if selected
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              child: Image.file(
+                                _image!,
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
-                              cursorColor: Color(0xff30C083),
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.email),
-                                labelText: 'Email',
-                                floatingLabelStyle: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xff30C083),
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextFormField(
+                              controller: passwordController,
                               cursorColor: Color(0xff30C083),
                               obscureText: true,
                               decoration: InputDecoration(
@@ -379,12 +448,11 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: ulangiPasswordController,
                               cursorColor: Color(0xff30C083),
                               obscureText: true,
                               decoration: InputDecoration(
@@ -406,18 +474,12 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginPage()),
-                                );
+                              onTap: () {                                
+                                _submitData(); // Call the function to print data
                               },
                               child: Container(
                                 width: double.infinity,
@@ -428,8 +490,8 @@ class _DaftarPageState extends State<DaftarPage> {
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(15),
-                                  child: const Text(
-                                    'Daftar',
+                                  child: Text(
+                                    buttonText,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w900,
@@ -441,15 +503,12 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: RichText(
                               text: TextSpan(
-                                text:
-                                    'Dengan mendaftar anda bersedia untuk menyetujui ',
+                                text: 'Dengan mendaftar anda bersedia untuk menyetujui ',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -507,16 +566,12 @@ class _DaftarPageState extends State<DaftarPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: 30),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                  SizedBox(height: 30),
                 ],
               ),
             ),
