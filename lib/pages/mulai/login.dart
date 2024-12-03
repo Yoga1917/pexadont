@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:pexadont/pages/login/lupa_sandi.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,6 +12,55 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController nikController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> login() async {
+    final String nik = nikController.text;
+    final String password = passwordController.text;
+
+    final String url = 'https://pexadont.agsa.site/api/login?nik=$nik&password=$password';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      var data = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        if(data['data']['status'] == "1"){
+          _saveLoginInfo(data['data']['nama'], data['data']['nik']);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Login berhasil")),
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LayoutPage()),
+          );
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Menunggu diverifikasi pengurus.")),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['data'])),
+        );
+      }
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal login, ulangi beberapa saat')),
+      );
+    }
+  }
+
+  Future<void> _saveLoginInfo(String nama, String nik) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('nama', nama);
+    await prefs.setString('nik', nik);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,9 +102,7 @@ class _LoginPageState extends State<LoginPage> {
             Center(
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 30,
-                  ),
+                  SizedBox(height: 30),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Container(
@@ -79,9 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Container(
@@ -100,12 +148,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: 30),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: nikController, // Set the controller
                               cursorColor: Color(0xff30C083),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.credit_card),
@@ -126,12 +173,11 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: passwordController, // Set the controller
                               cursorColor: Color(0xff30C083),
                               obscureText: true,
                               decoration: InputDecoration(
@@ -153,18 +199,12 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LayoutPage()),
-                                );
+                                login(); // Call the login function
                               },
                               child: Container(
                                 width: double.infinity,
@@ -188,9 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -207,9 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: 30),
                         ],
                       ),
                     ),

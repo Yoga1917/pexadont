@@ -6,6 +6,7 @@ import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';
 import 'package:pexadont/pages/pengaturan/pusat_bantuan.dart';
 import 'package:pexadont/pages/pengaturan/syarat.dart';
 import 'package:pexadont/pages/pengaturan/tentang_aplikasi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PengaturanPage extends StatefulWidget {
   @override
@@ -14,6 +15,23 @@ class PengaturanPage extends StatefulWidget {
 
 class _MyPengaturanPageState extends State<PengaturanPage> {
   bool _showProfilePicture = false;
+  String? nama;
+  String? nik;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      nama = prefs.getString('nama');
+      nik = prefs.getString('nik');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +61,14 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                     ),
                   ),
                   Text(
-                    'M. Dimas Prayoga',
+                    nama ?? "Load Nama...",
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '33261548255636',
+                    nik ?? "Load NIK...",
                     style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,

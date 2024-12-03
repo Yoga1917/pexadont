@@ -9,13 +9,32 @@ import 'package:pexadont/pages/beranda/pengurus.dart';
 import 'package:pexadont/pages/beranda/pesan.dart';
 import 'package:pexadont/widget/custom_category_container.dart';
 import 'package:pexadont/widget/custom_category_container_tablet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+
+
 class _MyHomePageState extends State<HomePage> {
+  String? nama;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      nama = prefs.getString('nama');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +80,7 @@ class _MyHomePageState extends State<HomePage> {
                               ),
                             ),
                             Text(
-                              'M. Dimas Prayoga',
+                              nama ?? "Loading...",
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
