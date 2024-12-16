@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pexadont/pages/mulai/login.dart';
 import 'package:pexadont/pages/mulai/start_page.dart';
 import 'package:pexadont/pages/pengaturan/edit_profil.dart';
 import 'package:pexadont/pages/pengaturan/ganti_sandi.dart';
@@ -31,6 +32,15 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
       nama = prefs.getString('nama');
       nik = prefs.getString('nik');
     });
+  }
+
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Hapus semua data yang disimpan
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
   }
 
   @override
@@ -79,7 +89,6 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                   ),
                   Container(
                     width: screenSize.width,
-                    height: screenSize.height,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -280,13 +289,7 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                                           ),
                                         ),
                                         onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  (StartPage()),
-                                            ),
-                                          );
+                                          logout();
                                         },
                                       ),
                                     ],

@@ -90,7 +90,7 @@ class StartPage extends StatelessWidget {
                             child: Text(
                               'Temukan berbagai informasi terkini tentang RT dan kegiatan Pemuda Desa Pekajangan Gg.19',
                               style: TextStyle(
-                                  fontSize: 12, color: Color(0xFF7A7A7A)),
+                                  fontSize: 14, color: Color(0xFF7A7A7A)),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -109,13 +109,12 @@ class StartPage extends StatelessWidget {
                               },
                               child: Container(
                                 width: double.infinity,
-                                height: 50,
                                 decoration: BoxDecoration(
                                   color: const Color(0xff30C083),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(15),
                                   child: const Text(
                                     'Masuk',
                                     style: TextStyle(
@@ -145,7 +144,6 @@ class StartPage extends StatelessWidget {
                               },
                               child: Container(
                                 width: double.infinity,
-                                height: 50,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
@@ -155,7 +153,7 @@ class StartPage extends StatelessWidget {
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(15),
                                   child: const Text(
                                     'Daftar',
                                     style: TextStyle(

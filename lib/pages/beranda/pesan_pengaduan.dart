@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class PesanPage extends StatelessWidget {
+class PesanPengaduanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff30C083),
         title: Text(
-          'Pesan',
+          'Pesan Pengaduan',
           style: TextStyle(
             color: Colors.white,
           ),
@@ -100,7 +100,7 @@ class PesanPage extends StatelessWidget {
                                   child: Text(
                                     "Pengaduan Bapak Ibu bburebuibgggr, ughrgruigbrubrgbfbwubfububiuebguewbgiewbwegbweugbewuigfbweiugbwugbwegubewguiewbguiewbgweu jibfibrbgw uhef hewufewugw uewbeu gwghwegu",
                                     style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       color: Colors.black,
                                     ),
                                     textAlign: TextAlign.justify,

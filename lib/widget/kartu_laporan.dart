@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
-class KartuLaporan extends StatelessWidget{
+class KartuLaporan extends StatelessWidget {
   final String month;
-  final String date;
   final String income;
   final String expense;
-  final String description;
+  final VoidCallback onDetail;
 
-  KartuLaporan ({
+  KartuLaporan({
     required this.month,
-    required this.date,
     required this.income,
     required this.expense,
-    required this.description,
+    required this.onDetail,
   });
 
   @override
@@ -36,23 +34,11 @@ class KartuLaporan extends StatelessWidget{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                month,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                children: [
-                  Icon(Icons.calendar_today, color: Colors.grey),
-                  SizedBox(width: 4),
-                  Text(date, style: TextStyle(color: Colors.grey)),
-                ],
-              ),
-            ],
+          Text(
+            month,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -60,6 +46,7 @@ class KartuLaporan extends StatelessWidget{
               Text(income),
             ],
           ),
+          SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -68,18 +55,33 @@ class KartuLaporan extends StatelessWidget{
               Text(expense),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Keterangan:',
-                  style: TextStyle(fontWeight: FontWeight.w500)),
-              Expanded(
-                child: Text(
-                  description,
-                  textAlign: TextAlign.right,
+          SizedBox(height: 20),
+          Center(
+            child: GestureDetector(
+              onTap: onDetail,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xff30C083),
+                  border: Border.all(
+                    color: Color(0xff30C083),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Detail',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),

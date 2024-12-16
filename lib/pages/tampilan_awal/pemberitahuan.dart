@@ -148,7 +148,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                     child: Text(
                                       "Assalamualaikum Bapak Ibu bburebuibgggr, ughrgruigbrubrgbfbwubfububiuebguewbgiewbwegbweugbewuigfbweiugbwugbwegubewguiewbguiewbgweu jibfibrbgw uhef  hewufewugw  uewbeu gwghwegu",
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         color: Colors.black,
                                       ),
                                     ),
@@ -162,7 +162,6 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                   child: Container(
                                     alignment: Alignment.center,
                                     width: double.infinity,
-                                    height: 40,
                                     decoration: BoxDecoration(
                                       color: const Color(0xff30C083),
                                       borderRadius: BorderRadius.circular(10),
@@ -175,28 +174,32 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                         ),
                                       ],
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.download,
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          'Download',
-                                          style: TextStyle(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.download,
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 14,
+                                            size: 20,
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            'Download',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

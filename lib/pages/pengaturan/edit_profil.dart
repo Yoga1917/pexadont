@@ -25,7 +25,7 @@ class EditProfilPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Container(
-                  width: 600,
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(width: 1, color: Colors.grey),
@@ -48,8 +48,6 @@ class EditProfilPage extends StatelessWidget {
                         onTap: () {},
                         child: CircleAvatar(
                           radius: 80,
-                          backgroundImage:
-                              AssetImage('assets/profile_placeholder.png'),
                           child: Icon(
                             Icons.camera_alt,
                             size: 30,
@@ -248,7 +246,6 @@ class EditProfilPage extends StatelessWidget {
                           },
                           child: Container(
                             width: double.infinity,
-                            height: 55,
                             decoration: BoxDecoration(
                               color: const Color(0xff30C083),
                               borderRadius: BorderRadius.circular(10),

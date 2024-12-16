@@ -14,19 +14,21 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController nikController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
 
   Future<void> login() async {
     final String nik = nikController.text;
     final String password = passwordController.text;
 
-    final String url = 'https://pexadont.agsa.site/api/login?nik=$nik&password=$password';
+    final String url =
+        'https://pexadont.agsa.site/api/login?nik=$nik&password=$password';
 
     try {
       final response = await http.get(Uri.parse(url));
       var data = json.decode(response.body);
 
       if (response.statusCode == 200) {
-        if(data['data']['status'] == "1"){
+        if (data['data']['status'] == "1") {
           _saveLoginInfo(data['data']['nama'], data['data']['nik']);
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -37,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
             context,
             MaterialPageRoute(builder: (context) => LayoutPage()),
           );
-        }else{
+        } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Menunggu diverifikasi pengurus.")),
           );
@@ -57,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _saveLoginInfo(String nama, String nik) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true);
     await prefs.setString('nama', nama);
     await prefs.setString('nik', nik);
   }
@@ -121,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                           Text(
                             'Masuklah untuk bisa mengakses seluruh fitur yang ada di Aplikasi.',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 14,
                               color: Colors.white,
                             ),
                           ),
@@ -177,9 +180,9 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
-                              controller: passwordController, // Set the controller
+                              controller: passwordController,
                               cursorColor: Color(0xff30C083),
-                              obscureText: true,
+                              obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.lock),
                                 labelText: 'Password',
@@ -196,6 +199,21 @@ class _LoginPageState extends State<LoginPage> {
                                     width: 2,
                                   ),
                                 ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: _isPasswordVisible
+                                        ? Color(0xff30C083)
+                                        : Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordVisible = !_isPasswordVisible;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -204,11 +222,10 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: GestureDetector(
                               onTap: () {
-                                login(); // Call the login function
+                                login();
                               },
                               child: Container(
                                 width: double.infinity,
-                                height: 55,
                                 decoration: BoxDecoration(
                                   color: const Color(0xff30C083),
                                   borderRadius: BorderRadius.circular(10),

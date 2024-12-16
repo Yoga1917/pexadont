@@ -23,9 +23,13 @@ class _DaftarPageState extends State<DaftarPage> {
   final TextEditingController tanggalLahirController = TextEditingController();
   final TextEditingController jenisKelaminController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController ulangiPasswordController = TextEditingController();
-  
-  File? _image; // Variable to hold the selected image
+  final TextEditingController ulangiPasswordController =
+      TextEditingController();
+
+  File? _image;
+
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -43,17 +47,15 @@ class _DaftarPageState extends State<DaftarPage> {
       buttonText = 'Register...';
     });
 
-    if(
-      (nikController.text == "") ||
-      (namaController.text == "") ||
-      (nomorRumahController.text == "") ||
-      (nomorTeleponController.text == "") ||
-      (tanggalLahirController.text == "") ||
-      (jenisKelaminController.text == "") ||
-      (passwordController.text == "") ||
-      (ulangiPasswordController.text == "") ||
-      (_image == null)
-    ){
+    if ((nikController.text == "") ||
+        (namaController.text == "") ||
+        (nomorRumahController.text == "") ||
+        (nomorTeleponController.text == "") ||
+        (tanggalLahirController.text == "") ||
+        (jenisKelaminController.text == "") ||
+        (passwordController.text == "") ||
+        (ulangiPasswordController.text == "") ||
+        (_image == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Isi data yang diperlukan!')),
       );
@@ -61,10 +63,10 @@ class _DaftarPageState extends State<DaftarPage> {
       setState(() {
         buttonText = 'Daftar';
       });
-    }else{
-      if(passwordController.text == ulangiPasswordController.text){
+    } else {
+      if (passwordController.text == ulangiPasswordController.text) {
         _register();
-      }else{
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Konfirmasi Password Tidak Cocok!')),
         );
@@ -77,7 +79,8 @@ class _DaftarPageState extends State<DaftarPage> {
   }
 
   Future<void> _register() async {
-    var request = http.MultipartRequest('POST', Uri.parse('https://pexadont.agsa.site/api/warga/simpan'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://pexadont.agsa.site/api/warga/simpan'));
     request.fields['nik'] = nikController.text;
     request.fields['nama'] = namaController.text;
     request.fields['tgl_lahir'] = tanggalLahirController.text;
@@ -102,12 +105,12 @@ class _DaftarPageState extends State<DaftarPage> {
         MaterialPageRoute(builder: (context) => LoginPage()),
       );
     } else {
-      if(responseData['data']['foto'] != null){
+      if (responseData['data']['foto'] != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(responseData['data']['foto'])),
         );
       }
-      if(responseData['data']['nik'] != null){
+      if (responseData['data']['nik'] != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(responseData['data']['nik'])),
         );
@@ -179,7 +182,7 @@ class _DaftarPageState extends State<DaftarPage> {
                           Text(
                             'Daftarkan akun untuk bisa mengakses seluruh fitur yang ada di Aplikasi.',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 14,
                               color: Colors.white,
                             ),
                           )
@@ -318,12 +321,15 @@ class _DaftarPageState extends State<DaftarPage> {
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime(1900),
                                   lastDate: DateTime(2100),
-                                  builder: (BuildContext context, Widget? child) {
+                                  builder:
+                                      (BuildContext context, Widget? child) {
                                     return Theme(
                                       data: ThemeData.light().copyWith(
                                         primaryColor: Color(0xff30C083),
-                                        colorScheme: ColorScheme.light(primary: Color(0xff30C083)),
-                                        buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+                                        colorScheme: ColorScheme.light(
+                                            primary: Color(0xff30C083)),
+                                        buttonTheme: ButtonThemeData(
+                                            textTheme: ButtonTextTheme.primary),
                                       ),
                                       child: child ?? Container(),
                                     );
@@ -331,7 +337,8 @@ class _DaftarPageState extends State<DaftarPage> {
                                 );
                                 if (pickedDate != null) {
                                   setState(() {
-                                    tanggalLahirController.text = "${pickedDate.toLocal()}".split(' ')[0];
+                                    tanggalLahirController.text =
+                                        "${pickedDate.toLocal()}".split(' ')[0];
                                   });
                                 }
                               },
@@ -395,26 +402,27 @@ class _DaftarPageState extends State<DaftarPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: GestureDetector(
-                              onTap: _pickImage,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(10)
-                                ),
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.upload_file),
-                                    SizedBox(width: 10),
-                                    Text("Upload Foto")
-                                  ],
-                                ),
-                              )
-                            ),
+                                onTap: _pickImage,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 15),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.upload_file),
+                                      SizedBox(width: 10),
+                                      Text("Upload Foto")
+                                    ],
+                                  ),
+                                )),
                           ),
-                          if (_image != null) // Display image preview if selected
+                          if (_image !=
+                              null) // Display image preview if selected
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
                               child: Image.file(
                                 _image!,
                                 height: 100,
@@ -428,7 +436,7 @@ class _DaftarPageState extends State<DaftarPage> {
                             child: TextFormField(
                               controller: passwordController,
                               cursorColor: Color(0xff30C083),
-                              obscureText: true,
+                              obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.lock),
                                 labelText: 'Password',
@@ -445,6 +453,21 @@ class _DaftarPageState extends State<DaftarPage> {
                                     width: 2,
                                   ),
                                 ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: _isPasswordVisible
+                                        ? Color(0xff30C083)
+                                        : Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordVisible = !_isPasswordVisible;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -454,7 +477,7 @@ class _DaftarPageState extends State<DaftarPage> {
                             child: TextFormField(
                               controller: ulangiPasswordController,
                               cursorColor: Color(0xff30C083),
-                              obscureText: true,
+                              obscureText: !_isConfirmPasswordVisible,
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.lock),
                                 labelText: 'Ulangi Password',
@@ -471,6 +494,21 @@ class _DaftarPageState extends State<DaftarPage> {
                                     width: 2,
                                   ),
                                 ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isConfirmPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: _isConfirmPasswordVisible
+                                        ? Color(0xff30C083)
+                                        : Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -478,12 +516,11 @@ class _DaftarPageState extends State<DaftarPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: GestureDetector(
-                              onTap: () {                                
+                              onTap: () {
                                 _submitData(); // Call the function to print data
                               },
                               child: Container(
                                 width: double.infinity,
-                                height: 55,
                                 decoration: BoxDecoration(
                                   color: const Color(0xff30C083),
                                   borderRadius: BorderRadius.circular(10),
@@ -508,7 +545,8 @@ class _DaftarPageState extends State<DaftarPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: RichText(
                               text: TextSpan(
-                                text: 'Dengan mendaftar anda bersedia untuk menyetujui ',
+                                text:
+                                    'Dengan mendaftar anda bersedia untuk menyetujui ',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,

@@ -36,7 +36,7 @@ class TotalCard extends StatelessWidget {
             'Total',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -44,6 +44,7 @@ class TotalCard extends StatelessWidget {
               Text(totalIncome, style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
+          SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -52,6 +53,7 @@ class TotalCard extends StatelessWidget {
               Text(totalExpense, style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
+          SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

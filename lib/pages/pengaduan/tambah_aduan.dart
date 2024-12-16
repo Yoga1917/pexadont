@@ -53,11 +53,9 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            cursorColor: Color(0xff30C083),
+                          child: DropdownButtonFormField<String>(
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.credit_card),
-                              labelText: 'NIK',
+                              labelText: 'Jenis Pengaduan',
                               floatingLabelStyle: const TextStyle(
                                 color: Colors.black,
                               ),
@@ -67,89 +65,30 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: const BorderSide(
-                                  color: const Color(0xff30C083),
+                                  color: Color(0xff30C083),
                                   width: 2,
                                 ),
                               ),
+                              prefixIcon:
+                                  Icon(Icons.bug_report, color: Colors.black),
                             ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            cursorColor: Color(0xff30C083),
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.account_box),
-                              labelText: 'Nama Sesuai NIK',
-                              floatingLabelStyle: const TextStyle(
-                                color: Colors.black,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(
-                                  color: const Color(0xff30C083),
-                                  width: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            readOnly: true,
-                            onTap: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2100),
-                                builder: (BuildContext context, Widget? child) {
-                                  return Theme(
-                                    data: ThemeData.light().copyWith(
-                                      primaryColor: Color(0xff30C083),
-                                      colorScheme: ColorScheme.light(
-                                          primary: Color(0xff30C083)),
-                                      buttonTheme: ButtonThemeData(
-                                          textTheme: ButtonTextTheme.primary),
-                                    ),
-                                    child: child ?? Container(),
-                                  );
-                                },
+                            items: [
+                              'Keuangan',
+                              'Fasilitas',
+                              'Kebersihan',
+                              'Keamanan',
+                              'Kinerja',
+                              'Kegiatan',
+                            ].map((String bulan) {
+                              return DropdownMenuItem<String>(
+                                value: bulan,
+                                child: Text(bulan),
                               );
-                              if (pickedDate != null) {}
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.calendar_today),
-                              labelText: 'Tanggal Pengaduan',
-                              floatingLabelStyle: const TextStyle(
-                                color: Colors.black,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(
-                                  color: const Color(0xff30C083),
-                                  width: 2,
-                                ),
-                              ),
-                            ),
+                            }).toList(),
+                            onChanged: (String? newValue) {},
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
+                        SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: TextFormField(

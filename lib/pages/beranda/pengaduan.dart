@@ -37,13 +37,12 @@ class PengaduanPage extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          height: 50,
                           decoration: BoxDecoration(
                             color: const Color(0xff30C083),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(15),
                             child: Row(
                               children: [
                                 Icon(Icons.add, color: Colors.white),
@@ -63,7 +62,7 @@ class PengaduanPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 20,
+                        width: 30,
                       ),
                       Expanded(
                         child: TextField(
@@ -120,41 +119,43 @@ class PengaduanPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'M. Dimas Prayoga',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        '123456789123456',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    'Pengaduan Kebersihan',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
+                                  SizedBox(height: 10),
                                   Row(
                                     children: [
                                       Icon(Icons.calendar_month,
                                           color: Colors.black),
                                       SizedBox(width: 5),
                                       Text(
-                                        '14 Des 2024',
+                                        '14 Desember 2024',
                                         style: TextStyle(
                                           fontSize: 14,
                                         ),
                                       ),
                                     ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'M. Dimas Prayoga',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '123456789123456',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -208,19 +209,18 @@ class PengaduanPage extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {},
                     child: Container(
-                      height: 45,
                       decoration: BoxDecoration(
                         color: const Color(0xff30C083),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(15),
                         child: const Text(
                           'Tampilkan Semua',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            fontSize: 16,
+                            fontSize: 18,
                           ),
                           textAlign: TextAlign.center,
                         ),

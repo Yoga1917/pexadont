@@ -122,14 +122,14 @@ class KegiatanPage extends StatelessWidget {
                                   child: Text(
                                     "Assalamualaikum Bapak Ibu bburebuibgggr, ughrgruigbrubrgbfbwubfububiuebguewbgiewbwegbweugbewuigfbweiugbwugbwegubewguiewbguiewbgweu jibfibrbgw uhef hewufewugw uewbeu gwghwegu",
                                     style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       color: Colors.black,
                                     ),
                                     textAlign: TextAlign.justify,
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: 30),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -158,14 +158,12 @@ class KegiatanPage extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(
-                                        height: 10,
+                                        height: 15,
                                       ),
                                       GestureDetector(
                                         onTap: () {},
                                         child: Container(
                                           alignment: Alignment.center,
-                                          width: 100,
-                                          height: 30,
                                           decoration: BoxDecoration(
                                             color: const Color(0xff30C083),
                                             borderRadius:
@@ -180,23 +178,26 @@ class KegiatanPage extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.download,
-                                                  size: 16,
-                                                  color: Colors.white),
-                                              SizedBox(width: 2),
-                                              Text(
-                                                'Download',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 12,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.download,
+                                                    size: 14,
+                                                    color: Colors.white),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  'Download',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 12,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -226,14 +227,12 @@ class KegiatanPage extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(
-                                        height: 10,
+                                        height: 15,
                                       ),
                                       GestureDetector(
                                         onTap: () {},
                                         child: Container(
                                           alignment: Alignment.center,
-                                          width: 100,
-                                          height: 30,
                                           decoration: BoxDecoration(
                                             color: const Color(0xff30C083),
                                             borderRadius:
@@ -248,23 +247,26 @@ class KegiatanPage extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.download,
-                                                  size: 16,
-                                                  color: Colors.white),
-                                              SizedBox(width: 2),
-                                              Text(
-                                                'Download',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 12,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.download,
+                                                    size: 14,
+                                                    color: Colors.white),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  'Download',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 12,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),

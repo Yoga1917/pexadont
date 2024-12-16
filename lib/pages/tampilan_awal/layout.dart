@@ -4,6 +4,9 @@ import 'package:pexadont/pages/tampilan_awal/pemberitahuan.dart';
 import 'package:pexadont/pages/tampilan_awal/pengaturan.dart';
 
 class LayoutPage extends StatefulWidget {
+  final bool goToPemberitahuan;
+  LayoutPage({Key? key, this.goToPemberitahuan = false}) : super(key: key);
+
   @override
   _MyLayoutPageState createState() => _MyLayoutPageState();
 }
@@ -21,6 +24,20 @@ class _MyLayoutPageState extends State<LayoutPage> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  void goToPemberitahuan() {
+    setState(() {
+      _currentIndex = 1;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.goToPemberitahuan) {
+      goToPemberitahuan();
+    }
   }
 
   @override

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pexadont/pages/beranda/aktifitas.dart';
+import 'package:pexadont/pages/beranda/kegiatan_bulanan.dart';
 import 'package:pexadont/pages/beranda/datawarga.dart';
 import 'package:pexadont/pages/beranda/fasilitas.dart';
 import 'package:pexadont/pages/beranda/kas.dart';
 import 'package:pexadont/pages/beranda/kegiatan.dart';
 import 'package:pexadont/pages/beranda/pengaduan.dart';
 import 'package:pexadont/pages/beranda/pengurus.dart';
-import 'package:pexadont/pages/tampilan_awal/pemberitahuan.dart';
+import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
-class TentangAplikasiPage extends StatelessWidget {
+class TentangAplikasiPage extends StatefulWidget {
+  @override
+  State<TentangAplikasiPage> createState() => _TentangAplikasiPageState();
+}
+
+class _TentangAplikasiPageState extends State<TentangAplikasiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -507,7 +512,8 @@ class TentangAplikasiPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AktifitasPage()),
+                    MaterialPageRoute(
+                        builder: (context) => KegiatanBulananPage()),
                   );
                 },
                 child: Container(
@@ -569,7 +575,9 @@ class TentangAplikasiPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PemberitahuanPage()),
+                    MaterialPageRoute(
+                      builder: (context) => LayoutPage(goToPemberitahuan: true),
+                    ),
                   );
                 },
                 child: Container(
