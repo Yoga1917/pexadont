@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pexadont/pages/mulai/login.dart';
-import 'package:pexadont/pages/mulai/start_page.dart';
 import 'package:pexadont/pages/pengaturan/edit_profil.dart';
 import 'package:pexadont/pages/pengaturan/ganti_sandi.dart';
 import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';

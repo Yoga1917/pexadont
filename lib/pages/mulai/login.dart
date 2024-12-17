@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:pexadont/pages/login/lupa_sandi.dart';
+import 'package:pexadont/pages/mulai/start_page.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,6 +81,15 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => StartPage()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Stack(

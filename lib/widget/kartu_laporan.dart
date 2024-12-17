@@ -4,13 +4,17 @@ class KartuLaporan extends StatelessWidget {
   final String month;
   final String income;
   final String expense;
+  final String publish;
   final VoidCallback onDetail;
+  final VoidCallback onPublish;
 
   KartuLaporan({
     required this.month,
     required this.income,
     required this.expense,
+    required this.publish,
     required this.onDetail,
+    required this.onPublish,
   });
 
   @override
@@ -34,54 +38,100 @@ class KartuLaporan extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            month,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                month,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
           SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Pemasukan:', style: TextStyle(fontWeight: FontWeight.w500)),
-              Text(income),
+              Text(
+                'Pemasukan:',
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+              ),
+              Text(
+                income,
+                style: TextStyle(fontSize: 14),
+              ),
             ],
           ),
           SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Pengeluaran:',
-                  style: TextStyle(fontWeight: FontWeight.w500)),
-              Text(expense),
+              Text(
+                'Pengeluaran:',
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+              ),
+              Text(
+                expense,
+                style: TextStyle(fontSize: 14),
+              ),
             ],
           ),
           SizedBox(height: 20),
-          Center(
-            child: GestureDetector(
-              onTap: onDetail,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xff30C083),
-                  border: Border.all(
-                    color: Color(0xff30C083),
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'Detail',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 16,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              GestureDetector(
+                onTap: onDetail,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                      color: Color(0xff30C083),
+                      width: 2,
                     ),
-                    textAlign: TextAlign.center,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Detail',
+                      style: TextStyle(
+                        color: Color(0xff30C083),
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
-            ),
+              publish == "0"
+                  ? GestureDetector(
+                      onTap: onPublish,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff30C083),
+                          border: Border.all(
+                            color: Color(0xff30C083),
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: const Text(
+                            'Publish',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    )
+                  : const Text(""),
+            ],
           ),
         ],
       ),

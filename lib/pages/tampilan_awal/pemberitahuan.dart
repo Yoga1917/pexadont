@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class PemberitahuanPage extends StatefulWidget {
   @override
@@ -6,6 +10,88 @@ class PemberitahuanPage extends StatefulWidget {
 }
 
 class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
+  List<dynamic> pemberitahuanList = [];
+  List<dynamic> filteredPemberitahuanList = [];
+  TextEditingController searchController = TextEditingController();
+  bool isSearching = false;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPemberitahuanData();
+  }
+
+  Future<void> fetchPemberitahuanData() async {
+    final response = await http
+        .get(Uri.parse('https://pexadont.agsa.site/api/pemberitahuan'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        pemberitahuanList = (data['data'] as List)
+            .map(
+              (item) => {
+                'pemberitahuan': item['pemberitahuan'],
+                'deskripsi': item['deskripsi'],
+                'tgl': item['tgl'],
+                'file': item['file'] != null && item['file'].isNotEmpty
+                    ? 'https://pexadont.agsa.site/uploads/pemberitahuan/${item['file']}'
+                    : null,
+              },
+            )
+            .toList();
+        filteredPemberitahuanList = pemberitahuanList;
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to load data: ${response.statusCode}');
+    }
+  }
+
+  Future<void> downloadFile(String url) async {
+    try {
+      final Uri fileUri = Uri.parse(url);
+      if (await canLaunchUrl(fileUri)) {
+        await launchUrl(fileUri, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'Tidak dapat membuka URL: $url';
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mengunduh file: $e')),
+      );
+    }
+  }
+
+  void searchPemberitahuan(String query) {
+    final cleanedQuery =
+        query.trim().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
+
+    if (cleanedQuery.isEmpty) {
+      setState(() {
+        filteredPemberitahuanList = pemberitahuanList;
+        isSearching = false;
+      });
+      return;
+    }
+
+    final suggestions = pemberitahuanList.where((pemberitahuan) {
+      final pemberitahuanName = pemberitahuan['pemberitahuan'].toLowerCase();
+      return pemberitahuanName.contains(cleanedQuery);
+    }).toList();
+
+    setState(() {
+      isSearching = true;
+      filteredPemberitahuanList = suggestions;
+      filteredPemberitahuanList.sort((a, b) {
+        if (a['pemberitahuan'].toLowerCase() == cleanedQuery) return -1;
+        if (b['pemberitahuan'].toLowerCase() == cleanedQuery) return 1;
+        return a['pemberitahuan'].compareTo(b['pemberitahuan']);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
@@ -59,160 +145,221 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
               ),
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 1, color: Colors.grey),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: TextField(
+                      controller: searchController,
+                      cursorColor: Color(0xff30C083),
+                      decoration: InputDecoration(
+                        hintText: 'Cari Pengumuman...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(color: Color(0xff30C083)),
+                        ),
+                        prefixIcon: GestureDetector(
+                          onTap: () {
+                            searchPemberitahuan(searchController.text);
+                          },
+                          child: Icon(Icons.search, color: Colors.black),
+                        ),
+                        suffixIcon: isSearching
+                            ? IconButton(
+                                icon: Icon(Icons.clear, color: Colors.black),
+                                onPressed: () {
+                                  searchController.clear();
+                                  searchPemberitahuan('');
+                                },
+                              )
+                            : null,
                       ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Text(
-                                    'Undangan Rapat Warga',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
+                      onChanged: searchPemberitahuan,
+                    ),
+                  ),
+                  if (filteredPemberitahuanList.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 150),
+                      child: Text(
+                        'Data tidak ditemukan.',
+                      ),
+                    ),
+                  if (filteredPemberitahuanList.isNotEmpty)
+                    for (var pemberitahuan in filteredPemberitahuanList)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(width: 1, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Container(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Icon(Icons.calendar_month_outlined),
                                       SizedBox(
-                                        width: 10,
+                                        height: 30,
                                       ),
                                       Text(
-                                        '15 Desember 2024',
+                                        pemberitahuan['pemberitahuan'],
                                         style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                        ),
+                                            fontSize: 20,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 1, color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        spreadRadius: 1,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
+                                      SizedBox(
+                                        height: 10,
                                       ),
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 20),
-                                    child: Text(
-                                      "Assalamualaikum Bapak Ibu bburebuibgggr, ughrgruigbrubrgbfbwubfububiuebguewbgiewbwegbweugbewuigfbweiugbwugbwegubewguiewbguiewbgweu jibfibrbgw uhef  hewufewugw  uewbeu gwghwegu",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff30C083),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
-                                          spreadRadius: 1,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                      Row(
                                         children: [
-                                          Icon(
-                                            Icons.download,
-                                            color: Colors.white,
-                                            size: 20,
-                                          ),
+                                          Icon(Icons.calendar_month_outlined),
                                           SizedBox(
-                                            width: 5,
+                                            width: 10,
                                           ),
                                           Text(
-                                            'Download',
+                                            pemberitahuan['tgl'],
                                             style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: 16,
+                                              fontSize: 14,
+                                              color: Colors.black,
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 30,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            width: 1, color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.2),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 20),
+                                        child: Text(
+                                          pemberitahuan['deskripsi'],
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        final fileUrl = pemberitahuan['file'];
+                                        if (fileUrl != null &&
+                                            fileUrl.isNotEmpty) {
+                                          await downloadFile(fileUrl);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content:
+                                                Text('File tidak tidak ada'),
+                                            backgroundColor: Colors.red,
+                                          ));
+                                        }
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xff30C083),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.2),
+                                              spreadRadius: 1,
+                                              blurRadius: 5,
+                                              offset: Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.download,
+                                                color: Colors.white,
+                                                size: 20,
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                'Download',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
                 ],
               ),
             ),
