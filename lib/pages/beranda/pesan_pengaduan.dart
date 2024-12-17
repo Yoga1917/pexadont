@@ -149,7 +149,7 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                               padding: const EdgeInsets.all(20),
                                               child: Column(
                                                 children: [
-                                                  const Text("Pengaduanmu :",
+                                                  const Text("Anda Mengadukan :",
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold)),
