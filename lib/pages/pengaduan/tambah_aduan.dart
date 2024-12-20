@@ -30,10 +30,16 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
   }
 
   Future<void> _kirimData() async {
-    if (jenis == null || isiController.text.isEmpty) {
+    if (jenis == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Harap lengkapi semua data')),
+        SnackBar(content: Text('Harap Pilih Jenis Pengaduan!')),
+      );
+      return;
+    }
+
+    if (isiController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Harap isi Keterangan Aduan!')),
       );
       return;
     }
@@ -52,8 +58,9 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
       request.fields['isi'] = isiController.text;
       request.fields['tgl'] = DateFormat('yyyy-MM-dd').format(DateTime.now());
       request.fields['jenis'] = jenis!;
-      if(_foto != null){
-        request.files.add(await http.MultipartFile.fromPath('foto', _foto!.path));
+      if (_foto != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('foto', _foto!.path));
       }
 
       var streamedResponse = await request.send();

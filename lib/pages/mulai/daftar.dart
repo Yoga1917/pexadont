@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pexadont/pages/mulai/login.dart';
 import 'package:http/http.dart' as http;
+import 'package:pexadont/pages/mulai/start_page.dart';
 import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';
 import 'package:pexadont/pages/pengaturan/syarat.dart';
 
@@ -43,10 +44,6 @@ class _DaftarPageState extends State<DaftarPage> {
   }
 
   void _submitData() {
-    setState(() {
-      buttonText = 'Register...';
-    });
-
     if ((nikController.text == "") ||
         (namaController.text == "") ||
         (nomorRumahController.text == "") ||
@@ -57,13 +54,35 @@ class _DaftarPageState extends State<DaftarPage> {
         (ulangiPasswordController.text == "") ||
         (_image == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Isi data yang diperlukan!')),
+        SnackBar(content: Text('Harap lengkapi semua data!')),
       );
 
       setState(() {
         buttonText = 'Daftar';
       });
+
+      setState(() {
+        buttonText = 'Register...';
+      });
+
+      setState(() {
+        buttonText = 'Daftar';
+      });
     } else {
+      if (nikController.text.length < 16) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('NIK harus 16 digit angka!')),
+        );
+        return;
+      }
+
+      if (int.tryParse(nikController.text) == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Data NIK harus berupa angka!')),
+        );
+        return;
+      }
+
       if (passwordController.text == ulangiPasswordController.text) {
         _register();
       } else {
@@ -138,6 +157,15 @@ class _DaftarPageState extends State<DaftarPage> {
           ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => StartPage()),
+            );
+          },
+        ),
       ),
       body: Stack(
         children: <Widget>[
@@ -407,7 +435,9 @@ class _DaftarPageState extends State<DaftarPage> {
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 15),
                                   decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.black),
+                                      border: Border.all(
+                                          color: const Color.fromARGB(
+                                              255, 132, 130, 130)),
                                       borderRadius: BorderRadius.circular(10)),
                                   child: const Row(
                                     children: [
@@ -421,8 +451,7 @@ class _DaftarPageState extends State<DaftarPage> {
                           if (_image !=
                               null) // Display image preview if selected
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
+                              padding: const EdgeInsets.only(top: 20),
                               child: Image.file(
                                 _image!,
                                 height: 100,
@@ -505,7 +534,8 @@ class _DaftarPageState extends State<DaftarPage> {
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                      _isConfirmPasswordVisible =
+                                          !_isConfirmPasswordVisible;
                                     });
                                   },
                                 ),
