@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:indonesia/indonesia.dart';
 import 'package:pexadont/pages/kas_rt/detail_kas.dart';
+import 'package:pexadont/pages/tampilan_awal/beranda.dart';
+import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:pexadont/widget/kartu_laporan.dart';
 import 'package:pexadont/widget/kartu_total_laporan.dart';
 import 'package:http/http.dart' as http;
@@ -63,6 +65,15 @@ class _KasPageState extends State<KasPage> {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+            );
+          },
+        ),
       ),
       body: isLoading
           ? Center(
@@ -117,11 +128,11 @@ class _KasPageState extends State<KasPage> {
                         ),
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 18,
                       ),
-                      Text('Saldo Kas : Rp. 100.000.000'),
+                      Text('Saldo Kas : Rp. 100.000.000,-'),
                       SizedBox(
-                        height: 30,
+                        height: 12,
                       ),
                       ListView.builder(
                         shrinkWrap: true,

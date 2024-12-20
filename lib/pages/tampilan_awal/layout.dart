@@ -5,7 +5,15 @@ import 'package:pexadont/pages/tampilan_awal/pengaturan.dart';
 
 class LayoutPage extends StatefulWidget {
   final bool goToPemberitahuan;
-  LayoutPage({Key? key, this.goToPemberitahuan = false}) : super(key: key);
+  final bool goToHome;
+  final bool goToPengaturan;
+
+  LayoutPage({
+    Key? key,
+    this.goToPemberitahuan = false,
+    this.goToHome = false,
+    this.goToPengaturan = false,
+  }) : super(key: key);
 
   @override
   _MyLayoutPageState createState() => _MyLayoutPageState();
@@ -32,11 +40,27 @@ class _MyLayoutPageState extends State<LayoutPage> {
     });
   }
 
+  void goToHome() {
+    setState(() {
+      _currentIndex = 0;
+    });
+  }
+
+  void goToPengaturan() {
+    setState(() {
+      _currentIndex = 2;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.goToPemberitahuan) {
       goToPemberitahuan();
+    } else if (widget.goToHome) {
+      goToHome();
+    } else if (widget.goToPengaturan) {
+      goToPengaturan();
     }
   }
 

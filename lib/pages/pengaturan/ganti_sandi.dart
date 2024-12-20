@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class GantiSandiPage extends StatelessWidget {
   @override
@@ -14,6 +15,15 @@ class GantiSandiPage extends StatelessWidget {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Center(

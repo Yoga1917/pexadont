@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class KegiatanBulananPage extends StatefulWidget {
   @override
@@ -83,6 +84,15 @@ class _KegiatanBulananPageState extends State<KegiatanBulananPage> {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+            );
+          },
+        ),
       ),
       body: isLoading
           ? Center(

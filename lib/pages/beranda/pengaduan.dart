@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pexadont/pages/Pengaduan/tambah_aduan.dart';
+import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class PengaduanPage extends StatefulWidget {
   @override
@@ -99,6 +100,15 @@ class _PengaduanPageState extends State<PengaduanPage> {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+            );
+          },
+        ),
       ),
       body: isLoading
           ? Center(
@@ -113,9 +123,10 @@ class _PengaduanPageState extends State<PengaduanPage> {
                 } else {
                   return Column(
                     children: [
+                      SizedBox(height: 10),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

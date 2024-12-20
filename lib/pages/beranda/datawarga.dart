@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class DataWargaPage extends StatefulWidget {
   @override
@@ -81,6 +82,16 @@ class _DataWargaPageState extends State<DataWargaPage> {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToHome: true)),
+            );
+          },
+        ),
       ),
       body: isLoading
           ? Center(
@@ -91,8 +102,9 @@ class _DataWargaPageState extends State<DataWargaPage> {
           : SingleChildScrollView(
               child: Column(
                 children: [
+                  SizedBox(height: 10),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     child: TextField(
                       controller: searchController,
                       cursorColor: Color(0xff30C083),
@@ -137,9 +149,9 @@ class _DataWargaPageState extends State<DataWargaPage> {
                   if (filteredWargaList.isNotEmpty)
                     for (var warga in filteredWargaList)
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Container(
+                          margin: EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(width: 1, color: Colors.grey),
@@ -190,18 +202,21 @@ class _DataWargaPageState extends State<DataWargaPage> {
                                         fontSize: 14,
                                       ),
                                     ),
+                                    SizedBox(height: 2),
                                     Text(
                                       'Tanggal Lahir : ${warga['tgl_lahir']}',
                                       style: TextStyle(
                                         fontSize: 14,
                                       ),
                                     ),
+                                    SizedBox(height: 2),
                                     Text(
                                       'Jenis Kelamin : ${warga['jenis_kelamin']}',
                                       style: TextStyle(
                                         fontSize: 14,
                                       ),
                                     ),
+                                    SizedBox(height: 2),
                                     Text(
                                       'No. Rumah : ${warga['no_rumah']}',
                                       style: TextStyle(
@@ -209,7 +224,7 @@ class _DataWargaPageState extends State<DataWargaPage> {
                                       ),
                                     ),
                                     SizedBox(
-                                      height: 30,
+                                      height: 20,
                                     ),
                                   ],
                                 ),

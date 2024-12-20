@@ -28,6 +28,15 @@ class _TentangAplikasiPageState extends State<TentangAplikasiPage> {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

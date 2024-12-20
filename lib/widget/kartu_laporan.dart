@@ -52,11 +52,11 @@ class KartuLaporan extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Pemasukan:',
+                'Pemasukan :',
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
               Text(
-                income,
+                '$income,-',
                 style: TextStyle(fontSize: 14),
               ),
             ],
@@ -66,11 +66,11 @@ class KartuLaporan extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Pengeluaran:',
+                'Pengeluaran :',
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
               Text(
-                expense,
+                '$expense,-',
                 style: TextStyle(fontSize: 14),
               ),
             ],

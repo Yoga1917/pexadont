@@ -94,8 +94,6 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Color(0xff30C083),
       body: SingleChildScrollView(
@@ -126,8 +124,6 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
               height: 10,
             ),
             Container(
-              width: screenSize.width,
-              height: screenSize.height,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(

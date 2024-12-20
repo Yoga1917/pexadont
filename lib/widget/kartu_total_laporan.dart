@@ -40,25 +40,25 @@ class TotalCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Pemasukan:', style: TextStyle(fontWeight: FontWeight.w500)),
-              Text(totalIncome, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Pemasukan :', style: TextStyle(fontWeight: FontWeight.w500)),
+              Text('$totalIncome,-', style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
           SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Pengeluaran:',
+              Text('Pengeluaran :',
                   style: TextStyle(fontWeight: FontWeight.w500)),
-              Text(totalExpense, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('$totalExpense,-', style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
           SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Sisa Dana:', style: TextStyle(fontWeight: FontWeight.w500)),
-              Text(remainingFunds,
+              Text('Sisa Dana :', style: TextStyle(fontWeight: FontWeight.w500)),
+              Text('$remainingFunds,-',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
