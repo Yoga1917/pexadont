@@ -76,6 +76,13 @@ class _DaftarPageState extends State<DaftarPage> {
         return;
       }
 
+      if (int.tryParse(nomorTeleponController.text) == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Nomor WhatsApp harus berupa angka!')),
+        );
+        return;
+      }
+
       if (int.tryParse(nikController.text) == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Data NIK harus berupa angka!')),

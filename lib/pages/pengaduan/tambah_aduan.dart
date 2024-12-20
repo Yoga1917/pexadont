@@ -217,7 +217,7 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
                             ),
                           ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
