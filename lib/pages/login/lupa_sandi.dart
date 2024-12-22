@@ -9,6 +9,8 @@ class LupaSandiPage extends StatefulWidget {
 
 class _LupaSandiPageState extends State<LupaSandiPage> {
   final TextEditingController _nikController = TextEditingController();
+  String? nama;
+  String? whatsapp;
 
   void _cekNIK() async {
     final request = await http.get(
@@ -18,12 +20,33 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
     );
 
     final response = jsonDecode(request.body);
-
     if (response["status"] == 200) {
-      setState(() {});
+      setState(() {
+        nama = response["data"]["nama"];
+        whatsapp = response["data"]["no_wa"];
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Data warga tidak ditemukan')),
+      );
+    }
+  }
+
+  void _resetPassword() async {
+    final request = await http.get(
+      Uri.parse(
+          'https://pexadont.agsa.site/api/password/reset?nik=${_nikController.text}'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final response = jsonDecode(request.body);
+    if (response["status"] == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response["data"])),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mereset password')),
       );
     }
   }
@@ -100,6 +123,54 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
                       ),
                     ),
                     SizedBox(height: 30),
+                    if(nama != null)
+                    Container(
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Data warga ditemukan :"
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            nama!,
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Whatsapp : ${whatsapp}"
+                          ),
+                          SizedBox(height: 20),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                            child: Text("Password baru akan dikirimkan ke nomor whatsapp diatas, klik konfirmasi untuk melanjutkan.", textAlign: TextAlign.center),
+                          ),
+                          SizedBox(height: 15),
+                          GestureDetector(
+                            onTap: () => _resetPassword(),
+                            child: Container(
+                              width: double.infinity,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: const Color(0xff30C083),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(15),
+                                child: Text(
+                                  'Konfirmasi',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               );
