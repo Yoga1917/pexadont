@@ -322,21 +322,19 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                       const EdgeInsets.all(20),
                                                   child: Column(
                                                     children: [
-                                                      const Text("Balasan :",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      SizedBox(height: 10),
                                                       Text(
-                                                        pengaduan['balasan'] ??
-                                                            "-",
-                                                        style: TextStyle(
+                                                        "Balasan dari\n${pengaduan['aksiBy']} :",
+                                                        style: const TextStyle(fontWeight:FontWeight.bold),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                      const SizedBox(height: 10),
+                                                      Text(
+                                                        pengaduan['balasan'] != "" ? pengaduan['balasan'] : "-",
+                                                        style: const TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black,
                                                         ),
-                                                        textAlign:
-                                                            TextAlign.justify,
+                                                        textAlign: TextAlign.justify,
                                                       ),
                                                     ],
                                                   ),

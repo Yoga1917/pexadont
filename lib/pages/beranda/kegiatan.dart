@@ -207,7 +207,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                                                 size: 20),
                                             SizedBox(width: 10),
                                             Text(
-                                              kegiatan['ketua_pelaksana'],
+                                              "${kegiatan['ketua_pelaksana']} (Ketua Pelaksana)",
                                               style: TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.black,
