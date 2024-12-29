@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pexadont/pages/tampilan_awal/beranda.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class FasilitasPage extends StatefulWidget {

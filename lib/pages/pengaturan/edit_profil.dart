@@ -20,7 +20,8 @@ class EditProfilPage extends StatelessWidget {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToPengaturan: true)),
             );
           },
         ),
@@ -54,73 +55,6 @@ class EditProfilPage extends StatelessWidget {
                       SizedBox(
                         height: 30,
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: CircleAvatar(
-                          radius: 80,
-                          child: Icon(
-                            Icons.camera_alt,
-                            size: 30,
-                            color: Colors.white,
-                          ),
-                          backgroundColor: Color(0xff30C083),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          cursorColor: Colors.black,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.credit_card),
-                            labelText: 'NIK',
-                            floatingLabelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: const Color(0xff30C083),
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          cursorColor: Colors.black,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.account_box),
-                            labelText: 'Nama Sesuai NIK',
-                            floatingLabelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: const Color(0xff30C083),
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: TextFormField(
@@ -153,7 +87,7 @@ class EditProfilPage extends StatelessWidget {
                           cursorColor: Colors.black,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.call),
-                            labelText: 'Nomor Telepon atau WA',
+                            labelText: 'Nomor WhatsApp',
                             floatingLabelStyle: const TextStyle(
                               color: Colors.black,
                             ),
@@ -168,77 +102,6 @@ class EditProfilPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          cursorColor: Colors.black,
-                          readOnly: true,
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime(2100),
-                            );
-                            if (pickedDate != null) {
-                              // Handle the selected date here
-                            }
-                          },
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.calendar_today),
-                            labelText: 'Tanggal Lahir',
-                            floatingLabelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: const Color(0xff30C083),
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.person),
-                            labelText: 'Jenis Kelamin',
-                            floatingLabelStyle: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: const Color(0xff30C083),
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                          items: <String>['Laki-laki', 'Perempuan']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {},
                         ),
                       ),
                       SizedBox(

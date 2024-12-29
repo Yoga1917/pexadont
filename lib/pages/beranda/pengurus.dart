@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pexadont/pages/tampilan_awal/beranda.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class PengurusPage extends StatefulWidget {
@@ -11,7 +10,7 @@ class PengurusPage extends StatefulWidget {
 }
 
 class _PengurusPageState extends State<PengurusPage> {
-  String? selectedYear;
+  String? selectedPeriode;
   List<dynamic> pengurusData = [];
   bool isLoading = true;
 
@@ -22,9 +21,13 @@ class _PengurusPageState extends State<PengurusPage> {
   }
 
   Future<void> fetchPengurusData() async {
+    String url = selectedPeriode == null
+        ? 'https://pexadont.agsa.site/api/pengurus'
+        : 'https://pexadont.agsa.site/api/pengurus?periode=${selectedPeriode}';
+
     try {
       final response = await http.get(
-        Uri.parse('https://pexadont.agsa.site/api/pengurus'),
+        Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -70,7 +73,8 @@ class _PengurusPageState extends State<PengurusPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToHome: true)),
             );
           },
         ),
@@ -103,31 +107,35 @@ class _PengurusPageState extends State<PengurusPage> {
                                 iconEnabledColor: Colors.white,
                                 hint: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
+                                      horizontal: 10),
                                   child: Text(
-                                    'Pilih Tahun',
+                                    'Periode',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
-                                value: selectedYear,
-                                items: generateYearList()
-                                    .map<DropdownMenuItem<String>>(
-                                        (String year) {
+                                value: selectedPeriode,
+                                items: [
+                                  '2019-2024',
+                                  '2024-2029',
+                                  '2029-2034',
+                                ].map((String value) {
                                   return DropdownMenuItem<String>(
-                                    value: year,
+                                    value: value,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.only(left: 10),
                                       child: Text(
-                                        year,
-                                        style: TextStyle(color: Colors.white),
+                                        value,
+                                        style: const TextStyle(
+                                            color: Colors.white),
                                       ),
                                     ),
                                   );
                                 }).toList(),
                                 onChanged: (String? newValue) {
                                   setState(() {
-                                    selectedYear = newValue;
+                                    selectedPeriode = newValue;
                                   });
+                                  fetchPengurusData();
                                 },
                               ),
                             ),
@@ -236,15 +244,5 @@ class _PengurusPageState extends State<PengurusPage> {
               }),
             ),
     );
-  }
-
-  List<String> generateYearList() {
-    int currentYear = DateTime.now().year;
-    List<String> years = [];
-
-    for (int i = currentYear - 10; i <= 2070; i++) {
-      years.add(i.toString());
-    }
-    return years;
   }
 }
