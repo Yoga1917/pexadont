@@ -68,6 +68,10 @@ class _LoginPageState extends State<LoginPage> {
             context,
             MaterialPageRoute(builder: (context) => LayoutPage()),
           );
+        } else if (data['data']['status'] == "2") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Warga tidak aktif.")),
+          );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Menunggu diverifikasi pengurus.")),
