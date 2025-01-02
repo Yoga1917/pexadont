@@ -4,17 +4,14 @@ class KartuLaporan extends StatelessWidget {
   final String month;
   final String income;
   final String expense;
-  final String publish;
+
   final VoidCallback onDetail;
-  final VoidCallback onPublish;
 
   KartuLaporan({
     required this.month,
     required this.income,
     required this.expense,
-    required this.publish,
     required this.onDetail,
-    required this.onPublish,
   });
 
   @override
@@ -76,62 +73,32 @@ class KartuLaporan extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: onDetail,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: Color(0xff30C083),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
+          Center(
+            child: GestureDetector(
+              onTap: onDetail,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    color: Color(0xff30C083),
+                    width: 2,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      'Detail',
-                      style: TextStyle(
-                        color: Color(0xff30C083),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Detail',
+                    style: TextStyle(
+                      color: Color(0xff30C083),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
-              publish == "0"
-                  ? GestureDetector(
-                      onTap: onPublish,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff30C083),
-                          border: Border.all(
-                            color: Color(0xff30C083),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: const Text(
-                            'Publish',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 16,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    )
-                  : const Text(""),
-            ],
+            ),
           ),
         ],
       ),

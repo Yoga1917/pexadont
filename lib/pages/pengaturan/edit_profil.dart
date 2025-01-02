@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
-class EditProfilPage extends StatelessWidget {
+class EditProfilPage extends StatefulWidget {
+
+  @override
+  State<EditProfilPage> createState() => _EditProfilPageState();
+}
+
+class _EditProfilPageState extends State<EditProfilPage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

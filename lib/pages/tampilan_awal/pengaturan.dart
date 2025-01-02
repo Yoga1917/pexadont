@@ -18,7 +18,7 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
   String? nama;
   String? nik;
 
-  @override
+  @override 
   void initState() {
     super.initState();
     _loadData();
