@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pexadont/pages/beranda/datawarga.dart';
 import 'package:pexadont/pages/beranda/fasilitas.dart';
@@ -10,6 +11,8 @@ import 'package:pexadont/pages/beranda/kegiatan_bulanan.dart';
 import 'package:pexadont/widget/custom_category_container.dart';
 import 'package:pexadont/widget/custom_category_container_tablet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   @override
@@ -18,11 +21,14 @@ class HomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<HomePage> {
   String? nama;
+  String? rkbBulan;
+  dynamic rkbKegiatan;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    getRkb();
   }
 
   Future<void> _loadData() async {
@@ -31,6 +37,43 @@ class _MyHomePageState extends State<HomePage> {
     setState(() {
       nama = prefs.getString('nama');
     });
+  }
+
+  void getRkb() async {
+    final responseJson = await http.get(Uri.parse('https://pexadont.agsa.site/api/rkb'));
+    final Map<String, dynamic> response = jsonDecode(responseJson.body);
+
+    String currentMonth = DateFormat("MMMM yyyy", "id_ID").format(DateTime.now());
+
+    final List<dynamic> data = response["data"];
+    final currentMonthData = data.firstWhere(
+      (item) => item["bulan"] == currentMonth,
+      orElse: () => null,
+    );
+
+    setState(() {
+      rkbBulan = currentMonthData['bulan'];
+      rkbKegiatan = currentMonthData['data'];
+    });
+  }
+
+  String formatTgl(String tgl) {
+    final tanggal = DateFormat("yyyy-MM-dd").parse(tgl);
+    final bulans = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember"
+    ];
+    return DateFormat("dd").format(tanggal) + " " + bulans[int.parse(DateFormat("MM").format(tanggal)) - 1];
   }
 
   @override
@@ -507,34 +550,45 @@ class _MyHomePageState extends State<HomePage> {
                                 children: [
                                   SizedBox(height: 20),
                                   Text(
-                                    'Januari',
+                                    rkbBulan ?? "Load...",
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   SizedBox(height: 20),
-                                  Text(
-                                    '10 Januari => Gotong Royong',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    '15 Januari => Sholawatan',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    '28 Januari => Pembagian Bansos',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  SizedBox(height: 20)
+                                  (rkbKegiatan != null) && (rkbKegiatan.length > 0)
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          for (var item in rkbKegiatan)
+                                            Container(
+                                              margin:
+                                                  const EdgeInsets.only(
+                                                      bottom: 5),
+                                              child: Text(
+                                                formatTgl(item['tgl']) +
+                                                    " => " +
+                                                    item['keterangan'],
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ),
+                                          const SizedBox(height: 20)
+                                        ],
+                                      )
+                                    : Container(
+                                        margin: const EdgeInsets.only(
+                                            bottom: 20),
+                                        child: const Text(
+                                          'Tidak ada kegiatan di bulan ini',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
                                 ],
                               ),
                             ),
