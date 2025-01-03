@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class KebijakanPrivasiPage extends StatelessWidget {
-  final String whatsappUrl = "https://wa.me/085608182904";
+  final String whatsappUrl = "https://wa.me/6285608182904";
 
   void _launchWhatsApp() async {
     if (await canLaunch(whatsappUrl)) {

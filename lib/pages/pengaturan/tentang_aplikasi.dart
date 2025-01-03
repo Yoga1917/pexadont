@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pexadont/pages/beranda/kegiatan_bulanan.dart';
 import 'package:pexadont/pages/beranda/datawarga.dart';
 import 'package:pexadont/pages/beranda/fasilitas.dart';
 import 'package:pexadont/pages/beranda/kas.dart';
 import 'package:pexadont/pages/beranda/kegiatan.dart';
+import 'package:pexadont/pages/beranda/kegiatan_bulanan.dart';
 import 'package:pexadont/pages/beranda/pengaduan.dart';
 import 'package:pexadont/pages/beranda/pengurus.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
@@ -33,7 +33,8 @@ class _TentangAplikasiPageState extends State<TentangAplikasiPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToPengaturan: true)),
             );
           },
         ),
@@ -549,13 +550,13 @@ class _TentangAplikasiPageState extends State<TentangAplikasiPage> {
                           height: 20,
                         ),
                         Icon(
-                          Icons.accessibility_new,
+                          Icons.calendar_month,
                           size: 70,
                           color: Color(0xff30C083),
                         ),
                         SizedBox(height: 10),
                         Text(
-                          'Aktifitas',
+                          'Rencana Kegiatan Bulanan',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -563,7 +564,7 @@ class _TentangAplikasiPageState extends State<TentangAplikasiPage> {
                         ),
                         SizedBox(height: 20),
                         Text(
-                          'Lihat dan ikuti aktifitas bulanan yang diselenggarakan oleh rt kami.',
+                          'Melihat rencana kegiatan bulanan yang sudah dirancang secara matang oleh pengurus RT.',
                           style: TextStyle(
                             fontSize: 16,
                           ),

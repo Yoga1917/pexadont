@@ -4,7 +4,7 @@ import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PusatBantuanPage extends StatelessWidget {
-  final String whatsappUrl = "https://wa.me/081390628224";
+  final String whatsappUrl = "https://wa.me/6285608182904";
 
   void _launchWhatsApp() async {
     if (await canLaunch(whatsappUrl)) {
@@ -32,7 +32,8 @@ class PusatBantuanPage extends StatelessWidget {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToPengaturan: true)),
             );
           },
         ),

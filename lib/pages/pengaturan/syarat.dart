@@ -483,13 +483,13 @@ class SyaratPage extends StatelessWidget {
                         height: 20,
                       ),
                       Icon(
-                        Icons.accessibility_new,
+                        Icons.calendar_month,
                         size: 70,
                         color: Color(0xff30C083),
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Aktifitas',
+                        'Rencana Kegiatan Bulanan',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -497,7 +497,7 @@ class SyaratPage extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       Text(
-                        'Catatan mengenai aktifitas yang dilakukan oleh warga atau pengurus RT.',
+                        'Melihat rencana kegiatan bulanan yang sudah dirancang secara matang oleh pengurus RT.',
                         style: TextStyle(
                           fontSize: 16,
                         ),

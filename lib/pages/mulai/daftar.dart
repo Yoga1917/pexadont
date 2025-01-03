@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:pexadont/pages/mulai/login.dart';
-import 'package:http/http.dart' as http;
 import 'package:pexadont/pages/mulai/start_page.dart';
 import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';
 import 'package:pexadont/pages/pengaturan/syarat.dart';
@@ -44,6 +45,10 @@ class _DaftarPageState extends State<DaftarPage> {
   }
 
   void _submitData() {
+    setState(() {
+      buttonText = 'Mendaftar...';
+    });
+
     if ((nikController.text == "") ||
         (namaController.text == "") ||
         (nomorRumahController.text == "") ||
@@ -56,14 +61,6 @@ class _DaftarPageState extends State<DaftarPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Harap lengkapi semua data!')),
       );
-
-      setState(() {
-        buttonText = 'Daftar';
-      });
-
-      setState(() {
-        buttonText = 'Register...';
-      });
 
       setState(() {
         buttonText = 'Daftar';
