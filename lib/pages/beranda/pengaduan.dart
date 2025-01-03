@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pexadont/pages/Pengaduan/tambah_aduan.dart';
@@ -105,7 +106,8 @@ class _PengaduanPageState extends State<PengaduanPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToHome: true)),
             );
           },
         ),
