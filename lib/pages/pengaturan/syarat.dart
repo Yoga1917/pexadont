@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SyaratPage extends StatelessWidget {
-  final String whatsappUrl = "https://wa.me/081390628224";
+  final String whatsappUrl = "https://wa.me/6285608182904";
 
   void _launchWhatsApp() async {
     if (await canLaunch(whatsappUrl)) {
@@ -28,15 +27,6 @@ class SyaratPage extends StatelessWidget {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
-            );
-          },
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
