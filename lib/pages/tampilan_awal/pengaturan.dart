@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:pexadont/pages/mulai/login.dart';
-import 'package:pexadont/pages/pengaturan/edit_profil.dart';
 import 'package:pexadont/pages/pengaturan/ganti_sandi.dart';
 import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';
+import 'package:pexadont/pages/pengaturan/profil.dart';
 import 'package:pexadont/pages/pengaturan/pusat_bantuan.dart';
 import 'package:pexadont/pages/pengaturan/syarat.dart';
 import 'package:pexadont/pages/pengaturan/tentang_aplikasi.dart';
@@ -14,14 +17,48 @@ class PengaturanPage extends StatefulWidget {
 }
 
 class _MyPengaturanPageState extends State<PengaturanPage> {
-  bool _showProfilePicture = false;
   String? nama;
   String? nik;
+  String? fotoUrl;
 
-  @override 
+  @override
   void initState() {
     super.initState();
     _loadData();
+    _getFoto();
+  }
+
+  Future<void> _getFoto() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final nik = prefs.getString('nik');
+
+      final response = await http
+          .get(Uri.parse('https://pexadont.agsa.site/api/warga/edit/$nik'));
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['status'] == 200 && responseData['data'] != null) {
+          String foto = responseData['data']['foto'];
+
+          print("Foto URL: https://pexadont.agsa.site/uploads/warga/$foto");
+
+          setState(() {
+            fotoUrl = 'https://pexadont.agsa.site/uploads/warga/$foto';
+          });
+        } else {
+          throw Exception('Format data tidak valid');
+        }
+      } else {
+        throw Exception('Gagal mengambil data: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan: $error')),
+      );
+    }
   }
 
   Future<void> _loadData() async {
@@ -59,16 +96,33 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _showProfilePicture = !_showProfilePicture;
-                      });
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                fotoUrl ?? 'https://placehold.co/75x75.png',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
-                    child: Icon(
-                      Icons.person_pin,
-                      size: 150,
-                      color: Colors.white,
+                    child: CircleAvatar(
+                      radius: 75,
+                      backgroundImage: NetworkImage(
+                        fotoUrl ?? 'https://placehold.co/75x75.png',
+                      ),
                     ),
                   ),
+                  SizedBox(height: 10),
                   Text(
                     nama ?? "Load Nama...",
                     style: TextStyle(
@@ -84,7 +138,7 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                         fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   Container(
                     width: screenSize.width,
@@ -137,7 +191,7 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditProfilPage()),
+                                  builder: (context) => ProfilPage()),
                             );
                           },
                         ),
