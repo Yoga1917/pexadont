@@ -14,6 +14,7 @@ class _ProfilPageState extends State<ProfilPage> {
   final _nomorRumahController = TextEditingController();
   final _noWaController = TextEditingController();
   Map<String, dynamic>? _profile;
+  bool _isUpdating = false;
   bool _isLoading = true;
 
   @override
@@ -47,6 +48,9 @@ class _ProfilPageState extends State<ProfilPage> {
           setState(() {
             _profile = responseData['data'];
             _isLoading = false;
+
+            _nomorRumahController.text = _profile!['no_rumah'] ?? '';
+            _noWaController.text = _profile!['no_wa'] ?? '';
           });
         } else {
           throw Exception('Format data tidak valid');
@@ -66,6 +70,10 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Future<void> _updateProfile() async {
+    setState(() {
+      _isUpdating = true;
+    });
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final nik = prefs.getString('nik');
@@ -74,6 +82,25 @@ class _ProfilPageState extends State<ProfilPage> {
         throw Exception('NIK tidak ditemukan.');
       }
 
+      if (_nomorRumahController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+                  'Form tidak boleh kosong! Perbarui data yang diperlukan!.')),
+        );
+        return;
+      }
+
+      if (_noWaController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+                  'Form tidak boleh kosong! Perbarui data yang diperlukan!.')),
+        );
+        return;
+      }
+
+      // Cek jika tidak ada perubahan
       if (_nomorRumahController.text == _profile!['no_rumah'] &&
           _noWaController.text == _profile!['no_wa']) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,26 +109,35 @@ class _ProfilPageState extends State<ProfilPage> {
         return;
       }
 
+      // Persiapkan data untuk API
+      final requestBody = {
+        'nik': _profile!['nik'],
+        'nama': _profile!['nama'],
+        'tgl_lahir': _profile!['tgl_lahir'],
+        'jenis_kelamin': _profile!['jenis_kelamin'],
+        'no_rumah': _nomorRumahController.text, // data baru
+        'no_wa': _noWaController.text, // data baru
+        'status': _profile!['status'],
+      };
+
+      // Kirim permintaan ke API
       final response = await http.post(
         Uri.parse('https://pexadont.agsa.site/api/warga/update/$nik'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'no_rumah': _nomorRumahController.text,
-          'no_wa': _noWaController.text,
-        }),
+        body: json.encode(requestBody),
       );
-
       if (response.statusCode == 202) {
         final data = json.decode(response.body);
 
         if (data['status'] == 202) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Profil berhasil diperbarui'),
-          ));
+          // Update data lokal
           setState(() {
             _profile!['no_rumah'] = _nomorRumahController.text;
             _profile!['no_wa'] = _noWaController.text;
           });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profil berhasil diperbarui')),
+          );
         } else {
           throw Exception('Gagal memperbarui profil');
         }
@@ -109,9 +145,13 @@ class _ProfilPageState extends State<ProfilPage> {
         throw Exception('Gagal menghubungi server: ${response.statusCode}');
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Terjadi kesalahan: $error'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan: $error')),
+      );
+    } finally {
+      setState(() {
+        _isUpdating = false;
+      });
     }
   }
 
@@ -346,8 +386,8 @@ class _ProfilPageState extends State<ProfilPage> {
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(15),
-                                        child: const Text(
-                                          'Simpan',
+                                        child: Text(
+                                          _isUpdating ? 'Simpan...' : 'Simpan',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w900,
