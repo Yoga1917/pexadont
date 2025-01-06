@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class PengurusPage extends StatefulWidget {
@@ -53,6 +54,16 @@ class _PengurusPageState extends State<PengurusPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  String formatDate(String date) {
+    if (date.isEmpty) return 'Unknown Date';
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid Date';
+    }
   }
 
   @override
@@ -215,7 +226,7 @@ class _PengurusPageState extends State<PengurusPage> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    'Tanggal Lahir : ${pengurus['tgl_lahir']}',
+                                                    'Tanggal Lahir : ${formatDate(pengurus['tgl_lahir'])}',
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                     ),

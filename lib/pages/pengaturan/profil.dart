@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -155,6 +156,16 @@ class _ProfilPageState extends State<ProfilPage> {
     }
   }
 
+  String formatDate(String date) {
+    if (date.isEmpty) return 'Unknown Date';
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid Date';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,7 +261,7 @@ class _ProfilPageState extends State<ProfilPage> {
                                       ),
                                       SizedBox(height: 2),
                                       Text(
-                                        'Tanggal Lahir : ${_profile!['tgl_lahir']}',
+                                        'Tanggal Lahir : ${formatDate(_profile!['tgl_lahir'])}',
                                         style: TextStyle(
                                           fontSize: 14,
                                         ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PemberitahuanPage extends StatefulWidget {
@@ -94,6 +95,16 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
         return a['pemberitahuan'].compareTo(b['pemberitahuan']);
       });
     });
+  }
+
+  String formatDate(String date) {
+    if (date.isEmpty) return 'Unknown Date';
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid Date';
+    }
   }
 
   @override
@@ -246,7 +257,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                                     .calendar_month_outlined),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                  pemberitahuan['tgl'],
+                                                  '${formatDate(pemberitahuan['tgl'])}',
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.black,

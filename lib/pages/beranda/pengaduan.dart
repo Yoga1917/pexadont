@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/Pengaduan/tambah_aduan.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
@@ -86,6 +87,16 @@ class _PengaduanPageState extends State<PengaduanPage> {
         return a['jenis'].compareTo(b['jenis']);
       });
     });
+  }
+
+  String formatDate(String date) {
+    if (date.isEmpty) return 'Unknown Date';
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid Date';
+    }
   }
 
   @override
@@ -271,12 +282,14 @@ class _PengaduanPageState extends State<PengaduanPage> {
                                               Row(
                                                 children: [
                                                   Icon(Icons.calendar_month,
+                                                  size: 20,
                                                       color: Colors.black),
                                                   SizedBox(width: 5),
                                                   Text(
-                                                    pengaduan['tgl'],
+                                                    '${formatDate(pengaduan['tgl'])}',
                                                     style: TextStyle(
                                                       fontSize: 14,
+                                                      color: Colors.black,
                                                     ),
                                                   ),
                                                 ],

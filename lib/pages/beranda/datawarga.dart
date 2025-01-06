@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class DataWargaPage extends StatefulWidget {
@@ -67,6 +68,16 @@ class _DataWargaPageState extends State<DataWargaPage> {
         return a['nama'].compareTo(b['nama']);
       });
     });
+  }
+
+  String formatDate(String date) {
+    if (date.isEmpty) return 'Unknown Date';
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid Date';
+    }
   }
 
   @override
@@ -204,7 +215,7 @@ class _DataWargaPageState extends State<DataWargaPage> {
                                     ),
                                     SizedBox(height: 2),
                                     Text(
-                                      'Tanggal Lahir : ${warga['tgl_lahir']}',
+                                      'Tanggal Lahir : ${formatDate(warga['tgl_lahir'])}',
                                       style: TextStyle(
                                         fontSize: 14,
                                       ),

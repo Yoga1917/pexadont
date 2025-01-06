@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -73,6 +74,16 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
     });
   }
 
+  String formatDate(String date) {
+    if (date.isEmpty) return 'Unknown Date';
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid Date';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +102,8 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToHome: true)),
             );
           },
         ),
@@ -215,7 +227,7 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                           color: Colors.black),
                                                       SizedBox(width: 5),
                                                       Text(
-                                                        pengaduan['tgl'],
+                                                        '${formatDate(pengaduan['tgl'])}',
                                                         style: TextStyle(
                                                           fontSize: 14,
                                                         ),
@@ -324,17 +336,27 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                     children: [
                                                       Text(
                                                         "Balasan dari\n${pengaduan['aksiBy']} :",
-                                                        style: const TextStyle(fontWeight:FontWeight.bold),
-                                                        textAlign: TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                        textAlign:
+                                                            TextAlign.center,
                                                       ),
-                                                      const SizedBox(height: 10),
+                                                      const SizedBox(
+                                                          height: 10),
                                                       Text(
-                                                        pengaduan['balasan'] != "" ? pengaduan['balasan'] : "-",
+                                                        pengaduan['balasan'] !=
+                                                                ""
+                                                            ? pengaduan[
+                                                                'balasan']
+                                                            : "-",
                                                         style: const TextStyle(
                                                           fontSize: 14,
                                                           color: Colors.black,
                                                         ),
-                                                        textAlign: TextAlign.justify,
+                                                        textAlign:
+                                                            TextAlign.justify,
                                                       ),
                                                     ],
                                                   ),
