@@ -42,8 +42,6 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
         if (responseData['status'] == 200 && responseData['data'] != null) {
           String foto = responseData['data']['foto'];
 
-          print("Foto URL: https://pexadont.agsa.site/uploads/warga/$foto");
-
           setState(() {
             fotoUrl = 'https://pexadont.agsa.site/uploads/warga/$foto';
           });
@@ -54,7 +52,6 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
         throw Exception('Gagal mengambil data: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Terjadi kesalahan: $error')),
       );
