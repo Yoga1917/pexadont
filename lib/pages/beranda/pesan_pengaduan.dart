@@ -1,9 +1,10 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class PesanPengaduanPage extends StatefulWidget {
   @override
@@ -108,14 +109,17 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
           },
         ),
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                color: Color(0xff30C083),
-              ),
-            )
-          : SingleChildScrollView(
-              child: LayoutBuilder(builder: (context, constraints) {
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xff30C083),
+                ),
+              )
+            : LayoutBuilder(builder: (context, constraints) {
                 if (constraints.maxWidth > 600) {
                   return Column();
                 } else {
@@ -132,7 +136,6 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                             hintText: 'Cari Pesan Pengaduan Anda...',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.black),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -142,12 +145,11 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                               onTap: () {
                                 searchPesan(searchController.text);
                               },
-                              child: Icon(Icons.search, color: Colors.black),
+                              child: Icon(Icons.search),
                             ),
                             suffixIcon: isSearching
                                 ? IconButton(
-                                    icon:
-                                        Icon(Icons.clear, color: Colors.black),
+                                    icon: Icon(Icons.clear),
                                     onPressed: () {
                                       searchController.clear();
                                       searchPesan('');
@@ -163,227 +165,227 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                       SizedBox(
                         height: 20,
                       ),
-                      filteredPesanList.isEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 150),
-                              child: Text(
-                                'Data tidak ditemukan.',
-                              ),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: filteredPesanList.length,
-                              itemBuilder: (context, index) {
-                                final pengaduan = filteredPesanList[index];
-                                return Container(
-                                  margin: EdgeInsets.only(bottom: 20),
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
-                                          spreadRadius: 1,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              SizedBox(height: 20),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    'Pengaduan ${pengaduan['jenis']}',
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 6,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.calendar_month,
-                                                          size: 20,
-                                                          color: Colors.black),
-                                                      SizedBox(width: 5),
-                                                      Text(
-                                                        '${formatDate(pengaduan['tgl'])}',
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        ),
+                      Expanded(
+                        child: filteredPesanList.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'Data tidak ditemukan.',
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: filteredPesanList.length,
+                                itemBuilder: (context, index) {
+                                  final pengaduan = filteredPesanList[index];
+                                  return Container(
+                                    margin: EdgeInsets.only(bottom: 20),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            width: 1, color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.2),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                SizedBox(height: 20),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Pengaduan ${pengaduan['jenis']}',
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 20),
-                                              Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: Colors.grey),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.2),
-                                                      spreadRadius: 1,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0, 3),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 6,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.calendar_month,
+                                                          size: 20,
+                                                        ),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                          '${formatDate(pengaduan['tgl'])}',
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(20),
-                                                  child: Column(
-                                                    children: [
-                                                      const Text(
-                                                          "Anda Mengadukan :",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      SizedBox(height: 10),
-                                                      pengaduan['foto'] == null
-                                                          ? SizedBox()
-                                                          : Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      bottom:
-                                                                          20),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          20),
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20),
-                                                                child: Image
-                                                                    .network(
-                                                                  'https://pexadont.agsa.site/uploads/pengaduan/${pengaduan['foto']}',
-                                                                  // fit: BoxFit.cover,
-                                                                  width: double
-                                                                      .infinity,
+                                                SizedBox(height: 20),
+                                                Container(
+                                                  width: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Colors.grey),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.2),
+                                                        spreadRadius: 1,
+                                                        blurRadius: 5,
+                                                        offset: Offset(0, 3),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    child: Column(
+                                                      children: [
+                                                        const Text(
+                                                            "Anda Mengadukan :",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                        SizedBox(height: 10),
+                                                        pengaduan['foto'] ==
+                                                                null
+                                                            ? SizedBox()
+                                                            : Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        bottom:
+                                                                            10),
+                                                                child:
+                                                                    ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20),
+                                                                  child: Image
+                                                                      .network(
+                                                                    'https://pexadont.agsa.site/uploads/pengaduan/${pengaduan['foto']}',
+                                                                    width: double
+                                                                        .infinity,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                      Text(
-                                                        pengaduan['isi'],
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black,
+                                                        Text(
+                                                          pengaduan['isi'],
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.black,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.justify,
                                                         ),
-                                                        textAlign:
-                                                            TextAlign.justify,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                    top: 10),
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: Colors.grey),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.2),
-                                                      spreadRadius: 1,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0, 3),
+                                                      ],
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(20),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        "Balasan dari\n${pengaduan['aksiBy']} :",
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 10),
-                                                      Text(
-                                                        pengaduan['balasan'] !=
-                                                                ""
-                                                            ? pengaduan[
-                                                                'balasan']
-                                                            : "-",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.justify,
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      top: 10),
+                                                  width: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Colors.grey),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.2),
+                                                        spreadRadius: 1,
+                                                        blurRadius: 5,
+                                                        offset: Offset(0, 3),
                                                       ),
                                                     ],
                                                   ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          "Balasan dari\n${pengaduan['aksiBy']} :",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 10),
+                                                        Text(
+                                                          pengaduan['balasan'] !=
+                                                                  ""
+                                                              ? pengaduan[
+                                                                  'balasan']
+                                                              : "-",
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.black,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.justify,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: 30,
-                                              ),
-                                            ],
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              topRight: Radius.circular(20),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                },
+                              ),
+                      ),
                     ],
                   );
                 }
               }),
-            ),
+      ),
     );
   }
 }
