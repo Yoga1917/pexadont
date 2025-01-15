@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:indonesia/indonesia.dart';
 import 'package:pexadont/pages/kas_rt/detail_kas.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:pexadont/widget/kartu_laporan.dart';
 import 'package:pexadont/widget/kartu_total_laporan.dart';
-import 'package:http/http.dart' as http;
 
 class KasPage extends StatefulWidget {
   @override
@@ -16,20 +16,57 @@ class KasPage extends StatefulWidget {
 class _KasPageState extends State<KasPage> {
   String? selectedYear;
   List<dynamic> kasData = [];
+  List<dynamic> kasSaldo = [];
   bool isLoading = true;
-  int saldo_kas = 0;
+  String? aksiBy;
+  int saldoKas = 0;
+  int sisaDana = 0;
+  int totalIncome = 0;
+  int totalExpense = 0;
 
   @override
   void initState() {
     super.initState();
-    _getKasTerakhir();
+    selectedYear = DateTime.now().year.toString();
+    _fetchKas();
+    _fetchAllKas();
   }
 
-  void _getKasTerakhir() async {
+  void _fetchKas() async {
     try {
       String url = selectedYear == null
           ? 'https://pexadont.agsa.site/api/kas'
           : 'https://pexadont.agsa.site/api/kas?tahun=${selectedYear}';
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        setState(() {
+          kasData = responseData['data'];
+
+          kasData.sort((a, b) =>
+              int.parse(b['id_kas']).compareTo(int.parse(a['id_kas'])));
+
+          perhitunganTotal();
+          isLoading = false;
+          aksiBy = responseData['aksiBy'];
+        });
+      } else {
+        showSnackbar('Gagal memuat data kas');
+      }
+    } catch (e) {
+      showSnackbar('Terjadi kesalahan: $e');
+    }
+  }
+
+  void _fetchAllKas() async {
+    try {
+      String url = 'https://pexadont.agsa.site/api/kas';
       final response = await http.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
@@ -38,27 +75,49 @@ class _KasPageState extends State<KasPage> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         setState(() {
-          kasData = responseData['data'];
-          kasData.sort((a, b) =>
+          kasSaldo = responseData['data'];
+          kasSaldo.sort((a, b) =>
               int.parse(b['id_kas']).compareTo(int.parse(a['id_kas'])));
 
-          int totalSisaKas = 0;
-          for (var kas in kasData) {
-            int pemasukan =
-                kas['pemasukan'] != null ? int.parse(kas['pemasukan']) : 0;
-            int pengeluaran =
-                kas['pengeluaran'] != null ? int.parse(kas['pengeluaran']) : 0;
-            totalSisaKas += (pemasukan - pengeluaran);
-          }
-          saldo_kas = totalSisaKas;
-
-          isLoading = false;
+          _saldoKas();
         });
       } else {
         showSnackbar('Gagal memuat data kas');
       }
     } catch (e) {
       showSnackbar('Terjadi kesalahan: $e');
+    }
+  }
+
+  void _saldoKas() {
+    for (var kas in kasSaldo) {
+      int pemasukan =
+          kas['pemasukan'] != null ? int.parse(kas['pemasukan']) : 0;
+      int pengeluaran =
+          kas['pengeluaran'] != null ? int.parse(kas['pengeluaran']) : 0;
+
+      saldoKas += (pemasukan - pengeluaran);
+    }
+  }
+
+  void perhitunganTotal() {
+    totalIncome = 0;
+    totalExpense = 0;
+    sisaDana = 0;
+
+    // Menghitung total pemasukan dan pengeluaran serta sisa dana hanya untuk tahun yang dipilih
+    for (var kas in kasData) {
+      if (kas['tahun'] == selectedYear) {
+        // Hanya untuk tahun yang dipilih
+        int pemasukan =
+            kas['pemasukan'] != null ? int.parse(kas['pemasukan']) : 0;
+        int pengeluaran =
+            kas['pengeluaran'] != null ? int.parse(kas['pengeluaran']) : 0;
+
+        totalIncome += pemasukan;
+        totalExpense += pengeluaran;
+        sisaDana += (pemasukan - pengeluaran); // Hanya untuk tahun yang dipilih
+      }
     }
   }
 
@@ -80,9 +139,8 @@ class _KasPageState extends State<KasPage> {
           ),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pushReplacement(
               context,
@@ -98,17 +156,18 @@ class _KasPageState extends State<KasPage> {
                 color: Color(0xff30C083),
               ),
             )
-          : SingleChildScrollView(
-              child: LayoutBuilder(builder: (context, constraints) {
-                if (constraints.maxWidth > 600) {
-                  return Column();
-                } else {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
+          : LayoutBuilder(builder: (context, constraints) {
+              if (constraints.maxWidth > 600) {
+                return Column();
+              } else {
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
                         decoration: BoxDecoration(
                           color: Color(0xff30C083),
                           borderRadius: BorderRadius.circular(10),
@@ -117,10 +176,11 @@ class _KasPageState extends State<KasPage> {
                           dropdownColor: Color(0xff30C083),
                           iconEnabledColor: Colors.white,
                           hint: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
                             child: Text(
-                              'Pilih Tahun',
-                              style: TextStyle(color: Colors.white),
+                              '',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),
                           value: selectedYear,
@@ -129,10 +189,12 @@ class _KasPageState extends State<KasPage> {
                             return DropdownMenuItem<String>(
                               value: year,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding:
+                                    const EdgeInsets.only(left: 20, right: 20),
                                 child: Text(
                                   year,
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
                                 ),
                               ),
                             );
@@ -141,66 +203,86 @@ class _KasPageState extends State<KasPage> {
                             setState(() {
                               selectedYear = newValue;
                             });
-                            _getKasTerakhir();
+                            _fetchKas();
                           },
+                          itemHeight: null,
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    if (kasData.length > 0)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Saldo Kas : ',
+                          ),
+                          Text(
+                            '${rupiah(saldoKas)},-',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      if (kasData.length > 0)
-                        Text('Saldo Kas : ${rupiah(saldo_kas)}'),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      kasData.length > 0
-                          ? ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: kasData.length,
-                              itemBuilder: (context, index) {
-                                final kas = kasData[index];
-                                return Column(
-                                  children: [
-                                    KartuLaporan(
-                                      month: kas['bulan'] + " " + kas['tahun'],
-                                      income: rupiah(kas['pemasukan']),
-                                      expense: rupiah(kas['pengeluaran']),
-                                      onDetail: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailKASPage(kas['id_kas'])),
-                                        );
-                                      },
-                                    ),
+                    SizedBox(height: 20),
+                    Expanded(
+                      child: kasData.length > 0
+                          ? SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: kasData.length,
+                                    itemBuilder: (context, index) {
+                                      final kas =
+                                          kasData.reversed.toList()[index];
+                                      return KartuLaporan(
+                                        month:
+                                            kas['bulan'] + " " + kas['tahun'],
+                                        aksiBy: aksiBy!,
+                                        income: rupiah(kas['pemasukan'] ?? 0),
+                                        expense:
+                                            rupiah(kas['pengeluaran'] ?? 0),
+                                        
+                                        onDetail: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailKASPage(
+                                                        kas['id_kas'])),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                  if (kasData.isNotEmpty)
                                     TotalCard(
-                                      totalIncome: rupiah(kas['pemasukan']),
-                                      totalExpense: rupiah(kas['pengeluaran']),
-                                      remainingFunds: rupiah(
-                                        (int.parse(kas['pemasukan']) -
-                                                int.parse(kas['pengeluaran']))
-                                            .toString(),
-                                      ),
+                                      totalIncome:
+                                          rupiah(totalIncome.toString()),
+                                      totalExpense:
+                                          rupiah(totalExpense.toString()),
+                                      remainingFunds:
+                                          rupiah(sisaDana.toString()),
                                     ),
-                                  ],
-                                );
-                              },
+                                  SizedBox(height: 30)
+                                ],
+                              ),
                             )
                           : Center(
                               child: Text(
-                                "Belum ada data KAS di tahun yang dipilih.",
-                              ),
+                                  "Tidak ada data KAS di tahun yang dipilih."),
                             ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                    ],
-                  );
-                }
-              }),
-            ),
+                    ),
+                  ],
+                );
+              }
+            }),
     );
   }
 
@@ -208,7 +290,7 @@ class _KasPageState extends State<KasPage> {
     int currentYear = DateTime.now().year;
     List<String> years = [];
 
-    for (int i = currentYear - 10; i <= currentYear; i++) {
+    for (int i = 2014; i <= currentYear; i++) {
       years.add(i.toString());
     }
     return years;

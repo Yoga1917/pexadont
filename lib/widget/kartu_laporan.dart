@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class KartuLaporan extends StatelessWidget {
   final String month;
+  final String aksiBy;
   final String income;
   final String expense;
 
@@ -9,6 +10,7 @@ class KartuLaporan extends StatelessWidget {
 
   KartuLaporan({
     required this.month,
+    required this.aksiBy,
     required this.income,
     required this.expense,
     required this.onDetail,
@@ -17,7 +19,7 @@ class KartuLaporan extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -35,40 +37,53 @@ class KartuLaporan extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                month,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Pemasukan :',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-              ),
-              Text(
-                '$income,-',
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
+          Text(
+            month,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 5),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(right: 6),
+                child: Icon(Icons.person_2_outlined,
+                    size: 16, color: Colors.black),
+              ),
+              Text(aksiBy, style: TextStyle(color: Colors.black)),
+            ],
+          ),
+          SizedBox(height: 15),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Pengeluaran :',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                'Pemasukan:',
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              ),
+              Text(
+                '$income,-',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          SizedBox(height: 3),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Pengeluaran:',
+                style: TextStyle(color: Colors.black, fontSize: 14),
               ),
               Text(
                 '$expense,-',
-                style: TextStyle(fontSize: 14),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
               ),
             ],
           ),
