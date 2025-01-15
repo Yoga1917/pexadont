@@ -123,14 +123,17 @@ class _PengaduanPageState extends State<PengaduanPage> {
           },
         ),
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                color: Color(0xff30C083),
-              ),
-            )
-          : SingleChildScrollView(
-              child: LayoutBuilder(builder: (context, constraints) {
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xff30C083),
+                ),
+              )
+            : LayoutBuilder(builder: (context, constraints) {
                 if (constraints.maxWidth > 600) {
                   return Column();
                 } else {
@@ -187,7 +190,6 @@ class _PengaduanPageState extends State<PengaduanPage> {
                                   hintText: 'Cari Pengaduan...',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(color: Colors.black),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -198,13 +200,11 @@ class _PengaduanPageState extends State<PengaduanPage> {
                                     onTap: () {
                                       searchPengaduan(searchController.text);
                                     },
-                                    child:
-                                        Icon(Icons.search, color: Colors.black),
+                                    child: Icon(Icons.search),
                                   ),
                                   suffixIcon: isSearching
                                       ? IconButton(
-                                          icon: Icon(Icons.clear,
-                                              color: Colors.black),
+                                          icon: Icon(Icons.clear),
                                           onPressed: () {
                                             searchController.clear();
                                             searchPengaduan('');
@@ -223,147 +223,140 @@ class _PengaduanPageState extends State<PengaduanPage> {
                       SizedBox(
                         height: 20,
                       ),
-                      filteredPengaduanList.isEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 150),
-                              child: Text(
-                                'Data tidak ditemukan.',
-                              ),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: filteredPengaduanList.length,
-                              itemBuilder: (context, index) {
-                                final pengaduan = filteredPengaduanList[index];
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Container(
-                                    margin: EdgeInsets.only(bottom: 20),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
-                                          spreadRadius: 1,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
+                      Expanded(
+                        child: filteredPengaduanList.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'Data tidak ditemukan.',
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: filteredPengaduanList.length,
+                                itemBuilder: (context, index) {
+                                  final pengaduan =
+                                      filteredPengaduanList[index];
+                                  return Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            width: 1, color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.2),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            offset: Offset(0, 3),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(height: 20),
-                                              Text(
-                                                'Pengaduan ${pengaduan['jenis']}',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              topRight: Radius.circular(20),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(height: 20),
+                                                Text(
+                                                  'Pengaduan ${pengaduan['jenis']}',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.calendar_month,
+                                                        size: 20),
+                                                    SizedBox(width: 10),
+                                                    Text(
+                                                      '${formatDate(pengaduan['tgl'])}',
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  pengaduan['nama'],
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  pengaduan['nik'],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 20),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 10),
+                                            child: Text(
+                                              'Mengadukan :',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              SizedBox(height: 10),
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.calendar_month,
-                                                  size: 20,
-                                                      color: Colors.black),
-                                                  SizedBox(width: 5),
-                                                  Text(
-                                                    '${formatDate(pengaduan['tgl'])}',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.black,
+                                            ),
+                                          ),
+                                          pengaduan['foto'] == null
+                                              ? SizedBox()
+                                              : Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 20,
+                                                          right: 20,
+                                                          top: 10,
+                                                          bottom: 20),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: Image.network(
+                                                      'https://pexadont.agsa.site/uploads/pengaduan/${pengaduan['foto']}',
+                                                      // fit: BoxFit.cover,
+                                                      width: double.infinity,
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 10),
-                                              Text(
-                                                pengaduan['nama'],
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                              ),
-                                              Text(
-                                                pengaduan['nik'],
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 10),
-                                          child: Text(
-                                            'Mengadukan :',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Text(
+                                              pengaduan['isi'],
                                             ),
                                           ),
-                                        ),
-                                        pengaduan['foto'] == null
-                                            ? SizedBox()
-                                            : Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 10,
-                                                    bottom: 20),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: Image.network(
-                                                    'https://pexadont.agsa.site/uploads/pengaduan/${pengaduan['foto']}',
-                                                    // fit: BoxFit.cover,
-                                                    width: double.infinity,
-                                                  ),
-                                                ),
-                                              ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: Text(
-                                            pengaduan['isi'],
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                            ),
+                                          SizedBox(
+                                            height: 20,
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                }),
+                      ),
                     ],
                   );
                 }
               }),
-            ),
+      ),
     );
   }
 }

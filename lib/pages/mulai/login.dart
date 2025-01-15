@@ -124,7 +124,10 @@ class _LoginPageState extends State<LoginPage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         child: Stack(
           children: <Widget>[
             Container(
@@ -198,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
-                              controller: nikController, // Set the controller
+                              controller: nikController,
                               cursorColor: Color(0xff30C083),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.credit_card),
@@ -249,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                                         : Icons.visibility_off,
                                     color: _isPasswordVisible
                                         ? Color(0xff30C083)
-                                        : Colors.black,
+                                        : null,
                                   ),
                                   onPressed: () {
                                     setState(() {

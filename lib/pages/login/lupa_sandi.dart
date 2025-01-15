@@ -65,7 +65,10 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         child: LayoutBuilder(
           builder: (context, constraints) {
             if (constraints.maxWidth > 600) {
@@ -123,54 +126,53 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
                       ),
                     ),
                     SizedBox(height: 30),
-                    if(nama != null)
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Data warga ditemukan :"
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            nama!,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "Whatsapp : ${whatsapp}"
-                          ),
-                          SizedBox(height: 20),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 30),
-                            child: Text("Password baru akan dikirimkan ke nomor whatsapp diatas, klik konfirmasi untuk melanjutkan.", textAlign: TextAlign.center),
-                          ),
-                          SizedBox(height: 15),
-                          GestureDetector(
-                            onTap: () => _resetPassword(),
-                            child: Container(
-                              width: double.infinity,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff30C083),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(15),
-                                child: Text(
-                                  'Konfirmasi',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 18,
+                    if (nama != null)
+                      Container(
+                        alignment: Alignment.center,
+                        child: Column(
+                          children: [
+                            const Text("Data warga ditemukan :"),
+                            SizedBox(height: 10),
+                            Text(
+                              nama!,
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 5),
+                            Text("Whatsapp : ${whatsapp}"),
+                            SizedBox(height: 20),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 30),
+                              child: Text(
+                                  "Password baru akan dikirimkan ke nomor whatsapp diatas, klik konfirmasi untuk melanjutkan.",
+                                  textAlign: TextAlign.center),
+                            ),
+                            SizedBox(height: 15),
+                            GestureDetector(
+                              onTap: () => _resetPassword(),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff30C083),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(15),
+                                  child: Text(
+                                    'Konfirmasi',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 18,
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
+                          ],
+                        ),
+                      )
                   ],
                 ),
               );

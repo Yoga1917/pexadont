@@ -111,7 +111,10 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         child: LayoutBuilder(builder: (context, constraints) {
           if (constraints.maxWidth > 600) {
             return Column();
@@ -160,8 +163,7 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
                                   width: 2,
                                 ),
                               ),
-                              prefixIcon:
-                                  Icon(Icons.bug_report, color: Colors.black),
+                              prefixIcon: Icon(Icons.bug_report),
                             ),
                             items: [
                               'Keuangan',
@@ -205,7 +207,7 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        if (_foto != null) // Display image preview if selected
+                        if (_foto != null)
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),

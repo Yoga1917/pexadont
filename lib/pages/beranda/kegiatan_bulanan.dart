@@ -89,7 +89,8 @@ class _KegiatanBulananPageState extends State<KegiatanBulananPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToHome: true)),
             );
           },
         ),
@@ -115,8 +116,10 @@ class _KegiatanBulananPageState extends State<KegiatanBulananPage> {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: rkbData.length,
                         itemBuilder: (context, index) {
-                          final rkbBulan = rkbData[index]['bulan'];
-                          final rkbKegiatan = rkbData[index]['data'];
+                          final rkbBulan =
+                              rkbData.reversed.toList()[index]['bulan'];
+                          final rkbKegiatan =
+                              rkbData.reversed.toList()[index]['data'];
                           return Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Container(
@@ -150,7 +153,7 @@ class _KegiatanBulananPageState extends State<KegiatanBulananPage> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(height: 20),
+                                    SizedBox(height: 10),
                                     rkbKegiatan.length > 0
                                         ? Column(
                                             crossAxisAlignment:

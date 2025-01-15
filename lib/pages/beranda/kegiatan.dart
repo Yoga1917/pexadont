@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +16,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
   List<dynamic> filteredKegiatanList = [];
   TextEditingController searchController = TextEditingController();
   bool isSearching = false;
+  List<bool> isExpanded = [];
   bool isLoading = true;
 
   @override
@@ -31,6 +33,9 @@ class _KegiatanPageState extends State<KegiatanPage> {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       setState(() {
         kegiatanList = responseData['data'];
+        for (var kegiatan in kegiatanList) {
+          kegiatan['isExpanded'] = false;
+        }
         filteredKegiatanList = kegiatanList;
         isLoading = false;
       });
@@ -82,6 +87,16 @@ class _KegiatanPageState extends State<KegiatanPage> {
     });
   }
 
+  String formatDate(String date) {
+    if (date.isEmpty) return 'Unknown Date';
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid Date';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,212 +121,147 @@ class _KegiatanPageState extends State<KegiatanPage> {
           },
         ),
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                color: Color(0xff30C083),
-              ),
-            )
-          : SingleChildScrollView(
-              child: LayoutBuilder(builder: (context, constraints) {
-                if (constraints.maxWidth > 600) {
-                  return Column();
-                } else {
-                  return Column(
-                    children: [
-                      SizedBox(height: 10),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        child: TextField(
-                          controller: searchController,
-                          cursorColor: Color(0xff30C083),
-                          decoration: InputDecoration(
-                            hintText: 'Cari Kegiatan...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Color(0xff30C083)),
-                            ),
-                            prefixIcon: GestureDetector(
-                              onTap: () {
-                                searchKegiatan(searchController.text);
-                              },
-                              child: Icon(Icons.search, color: Colors.black),
-                            ),
-                            suffixIcon: isSearching
-                                ? IconButton(
-                                    icon:
-                                        Icon(Icons.clear, color: Colors.black),
-                                    onPressed: () {
-                                      searchController.clear();
-                                      searchKegiatan('');
-                                    },
-                                  )
-                                : null,
-                          ),
-                          onChanged: searchKegiatan,
-                        ),
-                      ),
-                      if (filteredKegiatanList.isEmpty)
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xff30C083),
+                ),
+              )
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth > 600) {
+                    return Column();
+                  } else {
+                    return Column(
+                      children: [
+                        SizedBox(height: 10),
                         Padding(
-                          padding: const EdgeInsets.only(top: 150),
-                          child: Text(
-                            'Data tidak ditemukan.',
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: TextField(
+                            controller: searchController,
+                            cursorColor: Color(0xff30C083),
+                            decoration: InputDecoration(
+                              hintText: 'Cari Kegiatan...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide:
+                                    BorderSide(color: Color(0xff30C083)),
+                              ),
+                              prefixIcon: GestureDetector(
+                                onTap: () {
+                                  searchKegiatan(searchController.text);
+                                },
+                                child: Icon(Icons.search),
+                              ),
+                              suffixIcon: isSearching
+                                  ? IconButton(
+                                      icon: Icon(Icons.clear),
+                                      onPressed: () {
+                                        searchController.clear();
+                                        searchKegiatan('');
+                                      },
+                                    )
+                                  : null,
+                            ),
+                            onChanged: searchKegiatan,
                           ),
                         ),
-                      if (filteredKegiatanList.isNotEmpty)
-                        for (var kegiatan in filteredKegiatanList)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        width: 1, color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        spreadRadius: 1,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
+                        Expanded(
+                          child: filteredKegiatanList.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    'Data tidak ditemukan.',
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          kegiatan['nama_kegiatan'],
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.person_outline,
-                                                size: 20),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              "${kegiatan['ketua_pelaksana']} (Ketua Pelaksana)",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                              ),
+                                )
+                              : ListView.builder(
+                                  itemCount: filteredKegiatanList.length,
+                                  itemBuilder: (context, index) {
+                                    final kegiatan =
+                                        filteredKegiatanList[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                  width: 1, color: Colors.grey),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.2),
+                                                  spreadRadius: 1,
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 3),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.calendar_month_outlined,
-                                                size: 20),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              kegiatan['tgl'],
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 20),
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border.all(
-                                                width: 1, color: Colors.grey),
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.2),
-                                                spreadRadius: 1,
-                                                blurRadius: 5,
-                                                offset: Offset(0, 3),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Text(
-                                              kegiatan['keterangan'],
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black,
-                                              ),
-                                              textAlign: TextAlign.justify,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 30),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  width: 100,
-                                                  height: 100,
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 20),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    kegiatan['nama_kegiatan'],
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                  SizedBox(height: 10),
+                                                  Row(
                                                     children: [
-                                                      Icon(Icons.picture_as_pdf,
-                                                          color: Colors.red),
-                                                      SizedBox(height: 5),
-                                                      Text('Proposal',
-                                                          style: TextStyle(
-                                                              fontSize: 12)),
+                                                      Icon(Icons.person_outline,
+                                                          size: 20),
+                                                      SizedBox(width: 10),
+                                                      Text(
+                                                        "${kegiatan['ketua_pelaksana']} (Ketua Pelaksana)",
+                                                      ),
                                                     ],
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 15,
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    final fileUrl =
-                                                        "https://pexadont.agsa.site/uploads/kegiatan/proposal/" +
-                                                            kegiatan[
-                                                                'proposal'];
-                                                    await downloadFile(fileUrl);
-                                                  },
-                                                  child: Container(
-                                                    alignment: Alignment.center,
+                                                  SizedBox(height: 10),
+                                                  Row(
+                                                    children: [
+                                                      Icon(
+                                                          Icons
+                                                              .calendar_month_outlined,
+                                                          size: 20),
+                                                      SizedBox(width: 10),
+                                                      Text(
+                                                        '${formatDate(kegiatan['tgl'])}',
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  Container(
+                                                    width: double.infinity,
                                                     decoration: BoxDecoration(
-                                                      color: const Color(
-                                                          0xff30C083),
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.grey),
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              10),
+                                                              20),
                                                       boxShadow: [
                                                         BoxShadow(
                                                           color: Colors.black
@@ -325,166 +275,360 @@ class _KegiatanPageState extends State<KegiatanPage> {
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
-                                                              10),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                              20.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
-                                                          Icon(Icons.download,
-                                                              size: 14,
-                                                              color:
-                                                                  Colors.white),
-                                                          SizedBox(width: 5),
                                                           Text(
-                                                            'Download',
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w900,
-                                                              fontSize: 12,
-                                                            ),
+                                                            kegiatan[
+                                                                    'isExpanded']
+                                                                ? kegiatan[
+                                                                    'keterangan']
+                                                                : (kegiatan['keterangan']
+                                                                            .length >
+                                                                        100
+                                                                    ? kegiatan['keterangan'].substring(
+                                                                            0,
+                                                                            100) +
+                                                                        '...'
+                                                                    : kegiatan[
+                                                                        'keterangan']),
+                                                            textAlign: TextAlign
+                                                                .justify,
                                                           ),
+                                                          SizedBox(height: 10),
+                                                          if (kegiatan[
+                                                                      'keterangan']
+                                                                  .length >
+                                                              100) ...[
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  kegiatan[
+                                                                          'isExpanded'] =
+                                                                      !kegiatan[
+                                                                          'isExpanded'];
+                                                                });
+                                                              },
+                                                              child: Align(
+                                                                alignment: Alignment
+                                                                    .bottomRight,
+                                                                child: Text(
+                                                                  kegiatan[
+                                                                          'isExpanded']
+                                                                      ? 'Klik lagi untuk sembunyikan'
+                                                                      : 'Lihat selengkapnya',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Color(
+                                                                        0xff30C083),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .underline,
+                                                                    decorationColor:
+                                                                        Color(
+                                                                            0xff30C083),
+                                                                    height: 1.5,
+                                                                    decorationThickness:
+                                                                        2,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ]
                                                         ],
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  width: 100,
-                                                  height: 100,
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: Colors.grey),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: Column(
+                                                  SizedBox(height: 30),
+                                                  Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
-                                                            .center,
+                                                            .spaceAround,
                                                     children: [
-                                                      Icon(Icons.picture_as_pdf,
-                                                          color: Colors.red),
-                                                      SizedBox(height: 5),
-                                                      Text('LPJ',
-                                                          style: TextStyle(
-                                                              fontSize: 12)),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 15,
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    final fileUrl =
-                                                        kegiatan['lpj'];
-                                                    if (fileUrl != null) {
-                                                      await downloadFile(
-                                                          "https://pexadont.agsa.site/uploads/kegiatan/lpj/${fileUrl}");
-                                                    } else {
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                              SnackBar(
-                                                        content: Text(
-                                                            'LPJ belum tersedia'),
-                                                        backgroundColor:
-                                                            Colors.red,
-                                                      ));
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      color: kegiatan['lpj'] ==
-                                                              null
-                                                          ? Colors.red
-                                                          : const Color(
-                                                              0xff30C083),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black
-                                                              .withOpacity(0.2),
-                                                          spreadRadius: 1,
-                                                          blurRadius: 5,
-                                                          offset: Offset(0, 3),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                      Column(
                                                         children: [
-                                                          kegiatan['lpj'] ==
-                                                                  null
-                                                              ? const Icon(
-                                                                  Icons
-                                                                      .download,
-                                                                  size: 14,
+                                                          Container(
+                                                            width: 100,
+                                                            height: 100,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              border: Border.all(
+                                                                  width: 1,
                                                                   color: Colors
-                                                                      .white)
-                                                              : const Icon(
-                                                                  Icons
-                                                                      .download,
-                                                                  size: 14,
-                                                                  color: Colors
-                                                                      .white),
-                                                          const SizedBox(
-                                                              width: 5),
-                                                          Text(
-                                                            kegiatan['lpj'] ==
-                                                                    null
-                                                                ? 'Download'
-                                                                : "Download",
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w900,
-                                                              fontSize: 12,
+                                                                      .grey),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .picture_as_pdf,
+                                                                    color: Colors
+                                                                        .red),
+                                                                SizedBox(
+                                                                    height: 5),
+                                                                Text('Proposal',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12)),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 15,
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () async {
+                                                              final fileUrl =
+                                                                  "https://pexadont.agsa.site/uploads/kegiatan/proposal/" +
+                                                                      kegiatan[
+                                                                          'proposal'];
+                                                              await downloadFile(
+                                                                  fileUrl);
+                                                            },
+                                                            child: Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: const Color(
+                                                                    0xff30C083),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .black
+                                                                        .withOpacity(
+                                                                            0.2),
+                                                                    spreadRadius:
+                                                                        1,
+                                                                    blurRadius:
+                                                                        5,
+                                                                    offset:
+                                                                        Offset(
+                                                                            0,
+                                                                            3),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        10),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .download,
+                                                                        size:
+                                                                            14,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            5),
+                                                                    Text(
+                                                                      'Download',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontWeight:
+                                                                            FontWeight.w900,
+                                                                        fontSize:
+                                                                            12,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ),
+                                                      Column(
+                                                        children: [
+                                                          Container(
+                                                            width: 100,
+                                                            height: 100,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              border: Border.all(
+                                                                  width: 1,
+                                                                  color: Colors
+                                                                      .grey),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .picture_as_pdf,
+                                                                    color: Colors
+                                                                        .red),
+                                                                SizedBox(
+                                                                    height: 5),
+                                                                Text('LPJ',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12)),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 15,
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () async {
+                                                              final fileUrl =
+                                                                  kegiatan[
+                                                                      'lpj'];
+                                                              if (fileUrl !=
+                                                                  null) {
+                                                                await downloadFile(
+                                                                    "https://pexadont.agsa.site/uploads/kegiatan/lpj/${fileUrl}");
+                                                              } else {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                        SnackBar(
+                                                                  content: Text(
+                                                                      'LPJ belum tersedia'),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                ));
+                                                              }
+                                                            },
+                                                            child: Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: kegiatan[
+                                                                            'lpj'] ==
+                                                                        null
+                                                                    ? Colors.red
+                                                                    : const Color(
+                                                                        0xff30C083),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .black
+                                                                        .withOpacity(
+                                                                            0.2),
+                                                                    spreadRadius:
+                                                                        1,
+                                                                    blurRadius:
+                                                                        5,
+                                                                    offset:
+                                                                        Offset(
+                                                                            0,
+                                                                            3),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            10),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    kegiatan['lpj'] ==
+                                                                            null
+                                                                        ? const Icon(
+                                                                            Icons
+                                                                                .download,
+                                                                            size:
+                                                                                14,
+                                                                            color: Colors
+                                                                                .white)
+                                                                        : const Icon(
+                                                                            Icons
+                                                                                .download,
+                                                                            size:
+                                                                                14,
+                                                                            color:
+                                                                                Colors.white),
+                                                                    const SizedBox(
+                                                                        width:
+                                                                            5),
+                                                                    Text(
+                                                                      kegiatan['lpj'] ==
+                                                                              null
+                                                                          ? 'Download'
+                                                                          : "Download",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontWeight:
+                                                                            FontWeight.w900,
+                                                                        fontSize:
+                                                                            12,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                              ],
+                                                  SizedBox(height: 10),
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 30),
-                                      ],
-                                    ),
-                                  ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ],
-                            ),
-                          ),
-                    ],
-                  );
-                }
-              }),
-            ),
+                        )
+                      ],
+                    );
+                  }
+                },
+              ),
+      ),
     );
   }
 }

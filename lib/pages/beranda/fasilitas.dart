@@ -93,19 +93,23 @@ class _FasilitasPageState extends State<FasilitasPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToHome: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToHome: true)),
             );
           },
         ),
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(Color(0xff30C083)),
-              ),
-            )
-          : SingleChildScrollView(
-              child: Column(
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Color(0xff30C083)),
+                ),
+              )
+            : Column(
                 children: [
                   SizedBox(height: 10),
                   Padding(
@@ -117,7 +121,6 @@ class _FasilitasPageState extends State<FasilitasPage> {
                         hintText: 'Cari Fasilitas...',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -127,11 +130,11 @@ class _FasilitasPageState extends State<FasilitasPage> {
                           onTap: () {
                             searchFasilitas(searchController.text);
                           },
-                          child: Icon(Icons.search, color: Colors.black),
+                          child: Icon(Icons.search),
                         ),
                         suffixIcon: isSearching
                             ? IconButton(
-                                icon: Icon(Icons.clear, color: Colors.black),
+                                icon: Icon(Icons.clear),
                                 onPressed: () {
                                   searchController.clear();
                                   searchFasilitas('');
@@ -146,91 +149,95 @@ class _FasilitasPageState extends State<FasilitasPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  if (filteredFasilitasList.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 150),
-                      child: Text(
-                        'Data tidak ditemukan.',
-                      ),
-                    ),
-                  if (filteredFasilitasList.isNotEmpty)
-                    for (var fasilitas in filteredFasilitasList)
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20),
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 1, color: Colors.grey),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.network(
-                                    (fasilitas['foto'] != null)
-                                        ? 'https://pexadont.agsa.site/uploads/fasilitas/${fasilitas['foto']}'
-                                        : 'https://placehold.co/300x300.png',
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
+                  Expanded(
+                    child: filteredFasilitasList.isEmpty
+                        ? Center(
+                            child: Text(
+                              'Data tidak ditemukan.',
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: filteredFasilitasList.length,
+                            itemBuilder: (context, index) {
+                              final fasilitas = filteredFasilitasList[index];
+                              return Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 1,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: Image.network(
+                                            (fasilitas['foto'] != null)
+                                                ? 'https://pexadont.agsa.site/uploads/fasilitas/${fasilitas['foto']}'
+                                                : 'https://placehold.co/300x300.png',
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            SizedBox(height: 10),
+                                            Text(
+                                              fasilitas['nama'],
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              'Jumlah : ${fasilitas['jml']}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              ' Kondisi : ${fasilitas['status']}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            SizedBox(height: 20),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    SizedBox(height: 10),
-                                    Text(
-                                      fasilitas['nama'],
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      'Jumlah : ${fasilitas['jml']}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      ' Kondisi : ${fasilitas['status']}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        ),
-                      ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                  )
                 ],
               ),
-            ),
+      ),
     );
   }
 }
