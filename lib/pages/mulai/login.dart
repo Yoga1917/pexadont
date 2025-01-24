@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController nikController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool isLoading = false;
 
   Future<void> login() async {
     final String nik = nikController.text;
@@ -50,12 +51,20 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    setState(() {
+      isLoading = true;
+    });
+
     final String url =
         'https://pexadont.agsa.site/api/login?nik=$nik&password=$password';
 
     try {
       final response = await http.get(Uri.parse(url));
       var data = json.decode(response.body);
+
+      setState(() {
+        isLoading = false;
+      });
 
       if (response.statusCode == 200) {
         if (data['data']['status'] == "1") {
@@ -71,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         } else if (data['data']['status'] == "2") {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Warga tidak aktif.")),
+            SnackBar(content: Text("Akun warga sudah tidak aktif.")),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -84,6 +93,10 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal login, ulangi beberapa saat')),
@@ -164,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               fontSize: 40,
                               color: Colors.white,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
@@ -278,11 +291,11 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(15),
-                                  child: const Text(
-                                    'Masuk',
+                                  child: Text(
+                                    isLoading ? 'Masuk...' : 'Masuk',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w900,
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
                                     textAlign: TextAlign.center,
@@ -308,7 +321,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 30),
+                          SizedBox(height: 20),
                         ],
                       ),
                     ),

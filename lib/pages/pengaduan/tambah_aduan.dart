@@ -70,7 +70,7 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
         var responseData = jsonDecode(response.body);
         if (responseData['status'] == 201) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Pengaduan berhasil dikirim')),
+            const SnackBar(content: Text('Pengaduan berhasil dikirim!')),
           );
           Navigator.pushReplacement(
             context,
@@ -78,7 +78,7 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Gagal mengirim pengaduan')),
+            const SnackBar(content: Text('Gagal mengirim pengaduan!')),
           );
         }
       } else {
@@ -194,7 +194,7 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 15),
                               decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
+                                  border: Border.all(color: const Color.fromARGB(255, 120, 116, 116)),
                                   borderRadius: BorderRadius.circular(10)),
                               child: const Row(
                                 children: [
@@ -265,7 +265,7 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
                                   isLoading ? 'Mengirim...' : 'Kirim Aduan',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 18,
                                   ),
                                   textAlign: TextAlign.center,

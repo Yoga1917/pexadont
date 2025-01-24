@@ -18,6 +18,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
   bool isLoading = true;
   List<bool> isExpanded = [];
   String? aksiBy;
+  String? fotoAksiBy;
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
         filteredPemberitahuanList = pemberitahuanList;
         isLoading = false;
         aksiBy = data['aksiBy'];
+        fotoAksiBy = data['fotoAksiBy'];
       });
     } else {
       throw Exception('Failed to load data: ${response.statusCode}');
@@ -244,21 +246,61 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                               SizedBox(height: 10),
                                               Row(
                                                 children: [
-                                                  Icon(Icons.person_2_outlined,
-                                                      size: 18),
-                                                  SizedBox(width: 10),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return Dialog(
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20),
+                                                            ),
+                                                            child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              child:
+                                                                  Image.network(
+                                                                'https://pexadont.agsa.site/uploads/warga/$fotoAksiBy',
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                width: double
+                                                                    .infinity,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    child: CircleAvatar(
+                                                      radius: 10,
+                                                      backgroundImage:
+                                                          NetworkImage(
+                                                        'https://pexadont.agsa.site/uploads/warga/$fotoAksiBy',
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
                                                   Text(
-                                                    aksiBy ?? "-",
+                                                    aksiBy!,
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(height: 5),
+                                              SizedBox(height: 10),
                                               Row(
                                                 children: [
                                                   Icon(
                                                       Icons
                                                           .calendar_month_outlined,
-                                                      size: 18),
+                                                      size: 20),
                                                   SizedBox(width: 10),
                                                   Text(
                                                     '${formatDate(pemberitahuan['tgl'])}',
@@ -439,7 +481,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontWeight:
-                                                                FontWeight.w900,
+                                                                FontWeight.bold,
                                                             fontSize: 16,
                                                           ),
                                                         ),

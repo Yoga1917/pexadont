@@ -18,6 +18,7 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
   int totalPesan = 0;
   bool isSearching = false;
   TextEditingController searchController = TextEditingController();
+  String formattedTotalPesanPengaduan = '';
 
   @override
   void initState() {
@@ -40,9 +41,19 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
       return tglB.compareTo(tglA);
     });
 
+    final updatedData = data.map((item) {
+      item['fotoAksiBy'] = item['fotoAksiBy'] != null
+          ? "https://pexadont.agsa.site/uploads/warga/${item['fotoAksiBy']}"
+          : null;
+
+      return item;
+    }).toList();
+
     setState(() {
-      pengaduanData = data;
+      pengaduanData = updatedData;
       filteredPesanList = data;
+      formattedTotalPesanPengaduan =
+          NumberFormat.decimalPattern('id').format(pengaduanData.length);
       isLoading = false;
     });
   }
@@ -160,8 +171,18 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                           onChanged: searchPesan,
                         ),
                       ),
-                      Text(
-                          'Total Pesan : ${pengaduanData.length} Pesan Pengaduan'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Total Pesan : '),
+                          Text(
+                            NumberFormat.decimalPattern('id')
+                                .format(pengaduanData.length),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(' Pesan Pengaduan'),
+                        ],
+                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -220,7 +241,7 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      height: 6,
+                                                      height: 10,
                                                     ),
                                                     Row(
                                                       children: [
@@ -269,14 +290,14 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold)),
-                                                        SizedBox(height: 10),
                                                         pengaduan['foto'] ==
                                                                 null
-                                                            ? SizedBox()
+                                                            ? SizedBox(
+                                                                height: 5)
                                                             : Padding(
                                                                 padding: EdgeInsets
-                                                                    .only(
-                                                                        bottom:
+                                                                    .symmetric(
+                                                                        vertical:
                                                                             10),
                                                                 child:
                                                                     ClipRRect(
@@ -294,10 +315,6 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                               ),
                                                         Text(
                                                           pengaduan['isi'],
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.black,
-                                                          ),
                                                           textAlign:
                                                               TextAlign.justify,
                                                         ),
@@ -307,7 +324,7 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                 ),
                                                 Container(
                                                   margin: const EdgeInsets.only(
-                                                      top: 10),
+                                                      top: 20),
                                                   width: double.infinity,
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
@@ -334,27 +351,78 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          "Balasan dari\n${pengaduan['aksiBy']} :",
-                                                          style: const TextStyle(
+                                                          "Balasan dari",
+                                                          style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold),
                                                           textAlign:
                                                               TextAlign.center,
                                                         ),
-                                                        const SizedBox(
-                                                            height: 10),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 5),
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return Dialog(
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20),
+                                                                    ),
+                                                                    child:
+                                                                        ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20),
+                                                                      child: Image
+                                                                          .network(
+                                                                        '${pengaduan['fotoAksiBy']}',
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        width: double
+                                                                            .infinity,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            child: CircleAvatar(
+                                                              radius: 10,
+                                                              backgroundImage:
+                                                                  NetworkImage(
+                                                                '${pengaduan['fotoAksiBy']}',
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          "${pengaduan['aksiBy']} :",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                        SizedBox(height: 5),
                                                         Text(
                                                           pengaduan['balasan'] !=
                                                                   ""
                                                               ? pengaduan[
                                                                   'balasan']
                                                               : "-",
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.black,
-                                                          ),
                                                           textAlign:
                                                               TextAlign.justify,
                                                         ),
@@ -363,15 +431,9 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  height: 30,
+                                                  height: 20,
                                                 ),
                                               ],
-                                            ),
-                                          ),
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
                                             ),
                                           ),
                                         ],

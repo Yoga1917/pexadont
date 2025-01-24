@@ -255,7 +255,6 @@ class _PengurusPageState extends State<PengurusPage> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               children: <Widget>[
-                                                SizedBox(height: 10),
                                                 Text(
                                                   pengurus['nama'],
                                                   style: TextStyle(
@@ -263,26 +262,21 @@ class _PengurusPageState extends State<PengurusPage> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                                SizedBox(height: 10),
+                                                SizedBox(height: 5),
                                                 Text(
                                                   'NIK : ${pengurus['nik']}',
-                                                  style:
-                                                      TextStyle(fontSize: 14),
                                                 ),
+                                                SizedBox(height: 2),
                                                 Text(
                                                   'Tanggal Lahir : ${formatDate(pengurus['tgl_lahir'])}',
-                                                  style:
-                                                      TextStyle(fontSize: 14),
                                                 ),
+                                                SizedBox(height: 2),
                                                 Text(
                                                   'Jenis Kelamin : ${pengurus['jenis_kelamin']}',
-                                                  style:
-                                                      TextStyle(fontSize: 14),
                                                 ),
+                                                SizedBox(height: 2),
                                                 Text(
                                                   'No. Rumah : ${pengurus['no_rumah']}',
-                                                  style:
-                                                      TextStyle(fontSize: 14),
                                                 ),
                                                 SizedBox(height: 20),
                                               ],

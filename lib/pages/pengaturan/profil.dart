@@ -105,7 +105,7 @@ class _ProfilPageState extends State<ProfilPage> {
       if (_nomorRumahController.text == _profile!['no_rumah'] &&
           _noWaController.text == _profile!['no_wa']) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tidak ada data yang diubah.')),
+          const SnackBar(content: Text('Tidak ada data yang diubah!.')),
         );
         return;
       }
@@ -138,6 +138,13 @@ class _ProfilPageState extends State<ProfilPage> {
           });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Profil berhasil diperbarui')),
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfilPage(),
+            ),
           );
         } else {
           throw Exception('Gagal memperbarui profil');
@@ -190,240 +197,237 @@ class _ProfilPageState extends State<ProfilPage> {
           },
         ),
       ),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                color: Color(0xff30C083),
-              ),
-            )
-          : _profile == null
-              ? Center(child: Text('Data tidak ditemukan.'))
-              : SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 1, color: Colors.grey),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.network(
-                                      _profile!['foto'] != null
-                                          ? 'https://pexadont.agsa.site/uploads/warga/${_profile!['foto']}'
-                                          : 'https://placehold.co/300x300.png',
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      SizedBox(height: 10),
-                                      Text(
-                                        _profile!['nama'] ?? 'Unknown Name',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'Nik : ${_profile!['nik']}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      Text(
-                                        'Tanggal Lahir : ${formatDate(_profile!['tgl_lahir'])}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      Text(
-                                        'Jenis Kelamin : ${_profile!['jenis_kelamin']}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      Text(
-                                        'No. Rumah : ${_profile!['no_rumah']}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      Text(
-                                        'No. WhatsApp : ${_profile!['no_wa']}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xff30C083),
+                ),
+              )
+            : _profile == null
+                ? Center(child: Text('Data tidak ditemukan.'))
+                : SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 30,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 1, color: Colors.grey),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 20),
-                                  child: Text(
-                                    'Edit Profil Anda',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: TextFormField(
-                                    controller: _nomorRumahController,
-                                    cursorColor: Colors.black,
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(Icons.home),
-                                      labelText: 'Nomor Rumah',
-                                      floatingLabelStyle: const TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: const BorderSide(
-                                          color: const Color(0xff30C083),
-                                          width: 2,
-                                        ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Image.network(
+                                        _profile!['foto'] != null
+                                            ? 'https://pexadont.agsa.site/uploads/warga/${_profile!['foto']}'
+                                            : 'https://placehold.co/300x300.png',
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: TextFormField(
-                                    controller: _noWaController,
-                                    cursorColor: Colors.black,
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(Icons.call),
-                                      labelText: 'Nomor WhatsApp',
-                                      floatingLabelStyle: const TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: const BorderSide(
-                                          color: const Color(0xff30C083),
-                                          width: 2,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: GestureDetector(
-                                    onTap: _updateProfile,
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xff30C083),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15),
-                                        child: Text(
-                                          _isUpdating ? 'Simpan...' : 'Simpan',
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          _profile!['nama'] ?? 'Unknown Name',
                                           style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 18,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          textAlign: TextAlign.center,
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'Nik : ${_profile!['nik']}',
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          'Tanggal Lahir : ${formatDate(_profile!['tgl_lahir'])}',
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          'Jenis Kelamin : ${_profile!['jenis_kelamin']}',
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          'No. Rumah : ${_profile!['no_rumah']}',
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          'No. WhatsApp : ${_profile!['no_wa']}',
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    child: Text(
+                                      'Edit Profil Anda',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: TextFormField(
+                                      controller: _nomorRumahController,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(Icons.home),
+                                        labelText: 'Nomor Rumah',
+                                        floatingLabelStyle: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: const BorderSide(
+                                            color: const Color(0xff30C083),
+                                            width: 2,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                              ],
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: TextFormField(
+                                      controller: _noWaController,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(Icons.call),
+                                        labelText: 'Nomor WhatsApp',
+                                        floatingLabelStyle: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: const BorderSide(
+                                            color: const Color(0xff30C083),
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: GestureDetector(
+                                      onTap: _updateProfile,
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xff30C083),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Text(
+                                            _isUpdating
+                                                ? 'Simpan...'
+                                                : 'Simpan',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                      ],
+                          SizedBox(
+                            height: 30,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+      ),
     );
   }
 }

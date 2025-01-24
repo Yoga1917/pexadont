@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/tampilan_awal/layout.dart';
 
 class FasilitasPage extends StatefulWidget {
@@ -16,6 +17,7 @@ class _FasilitasPageState extends State<FasilitasPage> {
   TextEditingController searchController = TextEditingController();
   bool isSearching = false;
   bool isLoading = true;
+  String formattedTotalFasilitas = '';
 
   @override
   void initState() {
@@ -41,6 +43,9 @@ class _FasilitasPageState extends State<FasilitasPage> {
         filteredFasilitasList = fasilitasList;
         isLoading = false;
         totalFasilitas = fasilitasList.length;
+
+        formattedTotalFasilitas =
+            NumberFormat.decimalPattern('id').format(totalFasilitas);
       });
     } else {
       throw Exception('Failed to load data: ${response.statusCode}');
@@ -145,7 +150,18 @@ class _FasilitasPageState extends State<FasilitasPage> {
                       onChanged: searchFasilitas,
                     ),
                   ),
-                  Text('Total Fasilitas : $totalFasilitas Fasilitas'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Total Fasilitas : '),
+                      Text(
+                        NumberFormat.decimalPattern('id')
+                            .format(totalFasilitas),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(' Fasilitas'),
+                    ],
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -202,7 +218,6 @@ class _FasilitasPageState extends State<FasilitasPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: <Widget>[
-                                            SizedBox(height: 10),
                                             Text(
                                               fasilitas['nama'],
                                               style: TextStyle(
@@ -210,19 +225,13 @@ class _FasilitasPageState extends State<FasilitasPage> {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            SizedBox(height: 10),
+                                            SizedBox(height: 5),
                                             Text(
                                               'Jumlah : ${fasilitas['jml']}',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                              ),
                                             ),
                                             SizedBox(height: 2),
                                             Text(
                                               ' Kondisi : ${fasilitas['status']}',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                              ),
                                             ),
                                             SizedBox(height: 20),
                                           ],

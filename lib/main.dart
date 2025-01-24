@@ -6,7 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   Intl.defaultLocale = 'id_ID';
-
   runApp(MyApp());
 }
 
@@ -22,10 +21,33 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       title: 'Pexadon\'t',
+      home: SplashScreen(),
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
+        textSelectionTheme: TextSelectionThemeData(
+          selectionColor: Color(0xff30C083),
+          cursorColor: Color(0xff30C083),
+          selectionHandleColor: Color(0xff30C083),
+        ),
+        dialogTheme: DialogTheme(
+          backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(color: Color(0xff30C083)),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Color(0xff30C083),
+          ),
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Color(0xff30C083),
+          textTheme: ButtonTextTheme.primary,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xff30C083)),
+          ),
+        ),
       ),
-      home: SplashScreen(),
     );
   }
 }

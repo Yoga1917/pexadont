@@ -77,8 +77,7 @@ class StartPage extends StatelessWidget {
                             'Selamat Datang',
                             style: TextStyle(
                               fontSize: 32,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF7A7A7A),
+                              fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -89,8 +88,6 @@ class StartPage extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Text(
                               'Temukan berbagai informasi terkini tentang RT dan kegiatan Pemuda Desa Pekajangan Gg.19',
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0xFF7A7A7A)),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -119,7 +116,7 @@ class StartPage extends StatelessWidget {
                                     'Masuk',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w900,
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
                                     textAlign: TextAlign.center,
@@ -158,7 +155,7 @@ class StartPage extends StatelessWidget {
                                     'Daftar',
                                     style: TextStyle(
                                       color: Color(0xff30C083),
-                                      fontWeight: FontWeight.w900,
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
                                     textAlign: TextAlign.center,

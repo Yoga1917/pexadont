@@ -120,7 +120,7 @@ class _DaftarPageState extends State<DaftarPage> {
 
     if (responseData['status'] == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Pendaftaran warga berhasil')),
+        SnackBar(content: Text('Pendaftaran warga berhasil!')),
       );
 
       Navigator.pushReplacement(

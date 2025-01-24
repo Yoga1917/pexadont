@@ -17,6 +17,7 @@ class _PengaduanPageState extends State<PengaduanPage> {
   TextEditingController searchController = TextEditingController();
   bool isLoading = true;
   bool isSearching = false;
+  String formattedTotalPengaduan = '';
 
   @override
   void initState() {
@@ -38,16 +39,27 @@ class _PengaduanPageState extends State<PengaduanPage> {
         final response = json.decode(request.body);
         final data = response['data'];
 
-        // Urutkan data dari tanggal terbaru ke terlama
         data.sort((a, b) {
           final tglA = DateTime.parse(a['tgl']);
           final tglB = DateTime.parse(b['tgl']);
-          return tglB.compareTo(tglA); // Mengurutkan dari terbaru ke terlama
+          return tglB.compareTo(tglA);
         });
 
+        final updatedData = data.map((item) {
+          item['foto_warga'] = item['foto_warga'] != null
+              ? "https://pexadont.agsa.site/uploads/warga/${item['foto_warga']}"
+              : null;
+
+          return item;
+        }).toList();
+
         setState(() {
-          pengaduanData = data;
+          pengaduanData = updatedData;
           filteredPengaduanList = data;
+
+          formattedTotalPengaduan =
+              NumberFormat.decimalPattern('id').format(pengaduanData.length);
+
           isLoading = false;
         });
       } else {
@@ -218,8 +230,18 @@ class _PengaduanPageState extends State<PengaduanPage> {
                           ],
                         ),
                       ),
-                      Text(
-                          'Total Pengaduan : ${pengaduanData.length} Pengaduan'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Total Pengaduan : '),
+                          Text(
+                            NumberFormat.decimalPattern('id')
+                                .format(pengaduanData.length),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(' Pengaduan'),
+                        ],
+                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -291,20 +313,75 @@ class _PengaduanPageState extends State<PengaduanPage> {
                                                   ],
                                                 ),
                                                 SizedBox(height: 10),
-                                                Text(
-                                                  pengaduan['nama'],
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  pengaduan['nik'],
+                                                Row(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Dialog(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20),
+                                                              ),
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20),
+                                                                child: Image
+                                                                    .network(
+                                                                  pengaduan[
+                                                                      'foto_warga'],
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  width: double
+                                                                      .infinity,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                      child: CircleAvatar(
+                                                        radius: 20,
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                          pengaduan[
+                                                              'foto_warga'],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          pengaduan['nama'],
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          pengaduan['nik'],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          SizedBox(height: 20),
+                                          SizedBox(height: 10),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 bottom: 10),

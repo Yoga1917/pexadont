@@ -69,7 +69,7 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
 
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Hapus semua data yang disimpan
+    await prefs.clear();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
@@ -175,7 +175,7 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                         ListTile(
                           leading: Icon(Icons.person, color: Colors.black),
                           title: Text(
-                            'Edit Profile',
+                            'Profile',
                             style: TextStyle(
                               color: Colors.black,
                             ),
@@ -303,7 +303,7 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 20),
                           width: double.infinity,
-                          height: 50,
+                          
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff30C083),
@@ -347,12 +347,15 @@ class _MyPengaturanPageState extends State<PengaturanPage> {
                                 },
                               );
                             },
-                            child: Text(
-                              'Keluar',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Text(
+                                'Keluar',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),

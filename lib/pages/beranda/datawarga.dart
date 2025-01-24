@@ -17,6 +17,7 @@ class _DataWargaPageState extends State<DataWargaPage> {
   TextEditingController searchController = TextEditingController();
   bool isLoading = true;
   bool isSearching = false;
+  String formattedTotalWarga = '';
 
   @override
   void initState() {
@@ -36,6 +37,8 @@ class _DataWargaPageState extends State<DataWargaPage> {
         filteredWargaList = wargaList;
         isLoading = false;
         totalWarga = wargaList.length;
+        formattedTotalWarga =
+            NumberFormat.decimalPattern('id').format(totalWarga);
       });
     } else {
       throw Exception('Failed to load data');
@@ -150,7 +153,17 @@ class _DataWargaPageState extends State<DataWargaPage> {
                       onChanged: searchWarga,
                     ),
                   ),
-                  Text('Total Warga : $totalWarga Warga'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Total Warga : '),
+                      Text(
+                        NumberFormat.decimalPattern('id').format(totalWarga),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(' Warga')
+                    ],
+                  ),
                   SizedBox(height: 20),
                   Expanded(
                       child: filteredWargaList.isEmpty
@@ -201,7 +214,6 @@ class _DataWargaPageState extends State<DataWargaPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: <Widget>[
-                                              SizedBox(height: 10),
                                               Text(
                                                 warga['nama'] ?? 'Unknown Name',
                                                 style: TextStyle(
@@ -209,33 +221,21 @@ class _DataWargaPageState extends State<DataWargaPage> {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              SizedBox(height: 10),
+                                              SizedBox(height: 5),
                                               Text(
                                                 'Nik : ${warga['nik']}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
                                               ),
                                               SizedBox(height: 2),
                                               Text(
                                                 'Tanggal Lahir : ${formatDate(warga['tgl_lahir'])}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
                                               ),
                                               SizedBox(height: 2),
                                               Text(
                                                 'Jenis Kelamin : ${warga['jenis_kelamin']}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
                                               ),
                                               SizedBox(height: 2),
                                               Text(
                                                 'No. Rumah : ${warga['no_rumah']}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
                                               ),
                                               SizedBox(
                                                 height: 20,

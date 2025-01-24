@@ -40,10 +40,12 @@ class _MyHomePageState extends State<HomePage> {
   }
 
   void getRkb() async {
-    final responseJson = await http.get(Uri.parse('https://pexadont.agsa.site/api/rkb'));
+    final responseJson =
+        await http.get(Uri.parse('https://pexadont.agsa.site/api/rkb'));
     final Map<String, dynamic> response = jsonDecode(responseJson.body);
 
-    String currentMonth = DateFormat("MMMM yyyy", "id_ID").format(DateTime.now());
+    String currentMonth =
+        DateFormat("MMMM yyyy", "id_ID").format(DateTime.now());
 
     final List<dynamic> data = response["data"];
     final currentMonthData = data.firstWhere(
@@ -73,7 +75,9 @@ class _MyHomePageState extends State<HomePage> {
       "November",
       "Desember"
     ];
-    return DateFormat("dd").format(tanggal) + " " + bulans[int.parse(DateFormat("MM").format(tanggal)) - 1];
+    return DateFormat("dd").format(tanggal) +
+        " " +
+        bulans[int.parse(DateFormat("MM").format(tanggal)) - 1];
   }
 
   @override
@@ -526,7 +530,8 @@ class _MyHomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
                           child: Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -557,38 +562,32 @@ class _MyHomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(height: 20),
-                                  (rkbKegiatan != null) && (rkbKegiatan.length > 0)
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          for (var item in rkbKegiatan)
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.only(
-                                                      bottom: 5),
-                                              child: Text(
-                                                formatTgl(item['tgl']) +
-                                                    " => " +
-                                                    item['keterangan'],
-                                                style: const TextStyle(
-                                                  fontSize: 14,
+                                  (rkbKegiatan != null) &&
+                                          (rkbKegiatan.length > 0)
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            for (var item in rkbKegiatan)
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 5),
+                                                child: Text(
+                                                  formatTgl(item['tgl']) +
+                                                      " => " +
+                                                      item['keterangan'],
                                                 ),
                                               ),
-                                            ),
-                                          const SizedBox(height: 20)
-                                        ],
-                                      )
-                                    : Container(
-                                        margin: const EdgeInsets.only(
-                                            bottom: 20),
-                                        child: const Text(
-                                          'Tidak ada kegiatan di bulan ini',
-                                          style: TextStyle(
-                                            fontSize: 14,
+                                            const SizedBox(height: 20)
+                                          ],
+                                        )
+                                      : Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: const Text(
+                                            'Tidak ada kegiatan di bulan ini',
                                           ),
                                         ),
-                                      ),
                                 ],
                               ),
                             ),
@@ -601,7 +600,8 @@ class _MyHomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => KegiatanBulananPage()),
+                                    builder: (context) =>
+                                        KegiatanBulananPage()),
                               );
                             },
                             child: Container(
@@ -615,7 +615,7 @@ class _MyHomePageState extends State<HomePage> {
                                   'Lihat Selengkapnya',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                   textAlign: TextAlign.center,

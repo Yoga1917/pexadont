@@ -167,9 +167,6 @@ class _KegiatanBulananPageState extends State<KegiatanBulananPage> {
                                                     formatTgl(item['tgl']) +
                                                         " => " +
                                                         item['keterangan'],
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                    ),
                                                   ),
                                                 ),
                                               const SizedBox(height: 20)
@@ -180,9 +177,6 @@ class _KegiatanBulananPageState extends State<KegiatanBulananPage> {
                                                 bottom: 20),
                                             child: const Text(
                                               'Tidak ada kegiatan di bulan ini.',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                              ),
                                             ),
                                           ),
                                   ],

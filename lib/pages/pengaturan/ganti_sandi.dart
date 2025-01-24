@@ -12,14 +12,23 @@ class GantiSandiPage extends StatefulWidget {
 class _GantiSandiPageState extends State<GantiSandiPage> {
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool isLoading = false;
+  bool mataPasswordLama = false;
+  bool mataPasswordBaru = false;
+  bool mataKonfirmasiPasswordBaru = false;
 
   Future<void> _changePassword() async {
     final String nik = await _getNikFromSharedPreferences();
     final String oldPassword = _oldPasswordController.text;
     final String newPassword = _newPasswordController.text;
     final String confirmPassword = _confirmPasswordController.text;
+
+    if (newPassword.isEmpty | oldPassword.isEmpty | confirmPassword.isEmpty) {
+      _showSnackbar('Harap isi semua data!');
+      return;
+    }
 
     if (newPassword != confirmPassword) {
       _showSnackbar('Konfirmasi password baru tidak cocok!');
@@ -43,7 +52,8 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
       _showSnackbar(data['data']);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
+        MaterialPageRoute(
+            builder: (context) => LayoutPage(goToPengaturan: true)),
       );
     } else {
       setState(() => isLoading = false);
@@ -80,12 +90,16 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => LayoutPage(goToPengaturan: true)),
+              MaterialPageRoute(
+                  builder: (context) => LayoutPage(goToPengaturan: true)),
             );
           },
         ),
       ),
-      body: SingleChildScrollView(
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         child: Center(
           child: Column(
             children: [
@@ -114,8 +128,7 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: TextFormField(
                           controller: _oldPasswordController,
-                          cursorColor: Colors.black,
-                          obscureText: true,
+                          obscureText: !mataPasswordLama,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock),
                             labelText: 'Password Lama',
@@ -125,12 +138,26 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            focusedBorder: OutlineInputBorder (
+                            focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: const BorderSide(
                                 color: const Color(0xff30C083),
                                 width: 2,
                               ),
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                mataPasswordLama
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color:
+                                    mataPasswordLama ? Color(0xff30C083) : null,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  mataPasswordLama = !mataPasswordLama;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -140,8 +167,7 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: TextFormField(
                           controller: _newPasswordController,
-                          cursorColor: Colors.black,
-                          obscureText: true,
+                          obscureText: !mataPasswordBaru,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock),
                             labelText: 'Password Baru',
@@ -158,6 +184,20 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
                                 width: 2,
                               ),
                             ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                mataPasswordBaru
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color:
+                                    mataPasswordBaru ? Color(0xff30C083) : null,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  mataPasswordBaru = !mataPasswordBaru;
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -166,8 +206,7 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: TextFormField(
                           controller: _confirmPasswordController,
-                          cursorColor: Colors.black,
-                          obscureText: true,
+                          obscureText: !mataKonfirmasiPasswordBaru,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock),
                             labelText: 'Konfirmasi Password Baru',
@@ -183,6 +222,22 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
                                 color: const Color(0xff30C083),
                                 width: 2,
                               ),
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                mataKonfirmasiPasswordBaru
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: mataKonfirmasiPasswordBaru
+                                    ? Color(0xff30C083)
+                                    : null,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  mataKonfirmasiPasswordBaru =
+                                      !mataKonfirmasiPasswordBaru;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -205,7 +260,7 @@ class _GantiSandiPageState extends State<GantiSandiPage> {
                                 isLoading ? 'Memperbarui...' : 'Ubah Password',
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.bold,
                                   fontSize: 18,
                                 ),
                                 textAlign: TextAlign.center,

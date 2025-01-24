@@ -38,6 +38,8 @@ class _KasPageState extends State<KasPage> {
           ? 'https://pexadont.agsa.site/api/kas'
           : 'https://pexadont.agsa.site/api/kas?tahun=${selectedYear}';
 
+      print('Fetching data from: $url'); // Log URL
+
       final response = await http.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
@@ -47,7 +49,9 @@ class _KasPageState extends State<KasPage> {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
 
         setState(() {
-          kasData = responseData['data'];
+          kasData = responseData['data']
+              .where((item) => item['publish'] == '1')
+              .toList();
 
           kasData.sort((a, b) =>
               int.parse(b['id_kas']).compareTo(int.parse(a['id_kas'])));
@@ -75,7 +79,9 @@ class _KasPageState extends State<KasPage> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         setState(() {
-          kasSaldo = responseData['data'];
+          kasSaldo = responseData['data']
+              .where((kas) => kas['publish'] == '1')
+              .toList();
           kasSaldo.sort((a, b) =>
               int.parse(b['id_kas']).compareTo(int.parse(a['id_kas'])));
 
@@ -105,10 +111,8 @@ class _KasPageState extends State<KasPage> {
     totalExpense = 0;
     sisaDana = 0;
 
-    // Menghitung total pemasukan dan pengeluaran serta sisa dana hanya untuk tahun yang dipilih
     for (var kas in kasData) {
       if (kas['tahun'] == selectedYear) {
-        // Hanya untuk tahun yang dipilih
         int pemasukan =
             kas['pemasukan'] != null ? int.parse(kas['pemasukan']) : 0;
         int pengeluaran =
@@ -116,7 +120,7 @@ class _KasPageState extends State<KasPage> {
 
         totalIncome += pemasukan;
         totalExpense += pengeluaran;
-        sisaDana += (pemasukan - pengeluaran); // Hanya untuk tahun yang dipilih
+        sisaDana += (pemasukan - pengeluaran);
       }
     }
   }
@@ -190,7 +194,7 @@ class _KasPageState extends State<KasPage> {
                               value: year,
                               child: Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 20, right: 20),
+                                    const EdgeInsets.only(left: 20, right: 5),
                                 child: Text(
                                   year,
                                   style: TextStyle(
@@ -212,21 +216,19 @@ class _KasPageState extends State<KasPage> {
                     SizedBox(
                       height: 30,
                     ),
-                    if (kasData.length > 0)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Saldo Kas : ',
-                          ),
-                          Text(
-                            '${rupiah(saldoKas)},-',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Saldo Kas : ',
+                        ),
+                        Text(
+                          '${rupiah(saldoKas)},-',
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 20),
                     Expanded(
                       child: kasData.length > 0
@@ -248,7 +250,6 @@ class _KasPageState extends State<KasPage> {
                                         income: rupiah(kas['pemasukan'] ?? 0),
                                         expense:
                                             rupiah(kas['pengeluaran'] ?? 0),
-                                        
                                         onDetail: () {
                                           Navigator.push(
                                             context,
