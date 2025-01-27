@@ -65,83 +65,104 @@ class _DaftarPageState extends State<DaftarPage> {
       setState(() {
         buttonText = 'Daftar';
       });
-    } else {
-      if (nikController.text.length < 16) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('NIK harus 16 digit angka!')),
-        );
-        return;
-      }
-
-      if (int.tryParse(nomorTeleponController.text) == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Nomor WhatsApp harus berupa angka!')),
-        );
-        return;
-      }
-
-      if (int.tryParse(nikController.text) == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Data NIK harus berupa angka!')),
-        );
-        return;
-      }
-
-      if (passwordController.text == ulangiPasswordController.text) {
-        _register();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Konfirmasi Password Tidak Cocok!')),
-        );
-
-        setState(() {
-          buttonText = 'Daftar';
-        });
-      }
+      return;
     }
-  }
 
-  Future<void> _register() async {
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('https://pexadont.agsa.site/api/warga/simpan'));
-    request.fields['nik'] = nikController.text;
-    request.fields['nama'] = namaController.text;
-    request.fields['tgl_lahir'] = tanggalLahirController.text;
-    request.fields['jenis_kelamin'] = jenisKelaminController.text;
-    request.fields['no_rumah'] = nomorRumahController.text;
-    request.fields['no_wa'] = nomorTeleponController.text;
-    request.fields['password'] = passwordController.text;
-    request.fields['status'] = "0";
-    request.files.add(await http.MultipartFile.fromPath('foto', _image!.path));
-
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    var responseData = jsonDecode(response.body);
-
-    if (responseData['status'] == 200) {
+    if (nikController.text.length < 16) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Pendaftaran warga berhasil!')),
+        SnackBar(content: Text('NIK harus 16 digit angka!')),
       );
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-      );
-    } else {
-      if (responseData['data']['foto'] != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(responseData['data']['foto'])),
-        );
-      }
-      if (responseData['data']['nik'] != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(responseData['data']['nik'])),
-        );
-      }
 
       setState(() {
         buttonText = 'Daftar';
       });
+      return;
+    }
+
+    if (int.tryParse(nomorTeleponController.text) == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Nomor WhatsApp harus berupa angka!')),
+      );
+
+      setState(() {
+        buttonText = 'Daftar';
+      });
+      return;
+    }
+
+    if (int.tryParse(nikController.text) == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data NIK harus berupa angka!')),
+      );
+
+      setState(() {
+        buttonText = 'Daftar';
+      });
+      return;
+    }
+
+    if (passwordController.text != ulangiPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Konfirmasi Password Tidak Cocok!')),
+      );
+
+      setState(() {
+        buttonText = 'Daftar';
+      });
+      return;
+    }
+
+    _register().whenComplete(() {
+      setState(() {
+        buttonText = 'Daftar';
+      });
+    });
+  }
+
+  Future<void> _register() async {
+    try {
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('https://pexadont.agsa.site/api/warga/simpan'));
+      request.fields['nik'] = nikController.text;
+      request.fields['nama'] = namaController.text;
+      request.fields['tgl_lahir'] = tanggalLahirController.text;
+      request.fields['jenis_kelamin'] = jenisKelaminController.text;
+      request.fields['no_rumah'] = nomorRumahController.text;
+      request.fields['no_wa'] = nomorTeleponController.text;
+      request.fields['password'] = passwordController.text;
+      request.fields['status'] = "0";
+      request.files
+          .add(await http.MultipartFile.fromPath('foto', _image!.path));
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      var responseData = jsonDecode(response.body);
+
+      if (responseData['status'] == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Pendaftaran warga berhasil!')),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } else {
+        if (responseData['data']['foto'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseData['data']['foto'])),
+          );
+        }
+        if (responseData['data']['nik'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseData['data']['nik'])),
+          );
+        }
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan: $error')),
+      );
     }
   }
 
@@ -218,7 +239,6 @@ class _DaftarPageState extends State<DaftarPage> {
                             Text(
                               'Daftarkan akun untuk bisa mengakses seluruh fitur yang ada di Aplikasi.',
                               style: TextStyle(
-                                fontSize: 14,
                                 color: Colors.white,
                               ),
                             )
@@ -466,8 +486,7 @@ class _DaftarPageState extends State<DaftarPage> {
                                     ),
                                   )),
                             ),
-                            if (_image !=
-                                null) // Display image preview if selected
+                            if (_image != null)
                               Padding(
                                 padding: const EdgeInsets.only(top: 20),
                                 child: Image.file(
@@ -569,7 +588,7 @@ class _DaftarPageState extends State<DaftarPage> {
                                   const EdgeInsets.symmetric(horizontal: 20),
                               child: GestureDetector(
                                 onTap: () {
-                                  _submitData(); // Call the function to print data
+                                  _submitData();
                                 },
                                 child: Container(
                                   width: double.infinity,

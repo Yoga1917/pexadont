@@ -161,172 +161,178 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            Center(
-              child: Column(
-                children: [
-                  SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      width: 600,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Masuk',
-                            style: TextStyle(
-                              fontSize: 40,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Masuklah untuk bisa mengakses seluruh fitur yang ada di Aplikasi.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      width: 600,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 30),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextFormField(
-                              controller: nikController,
-                              cursorColor: Color(0xff30C083),
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.credit_card),
-                                labelText: 'NIK',
-                                floatingLabelStyle: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xff30C083),
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextFormField(
-                              controller: passwordController,
-                              cursorColor: Color(0xff30C083),
-                              obscureText: !_isPasswordVisible,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock),
-                                labelText: 'Password',
-                                floatingLabelStyle: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(
-                                    color: const Color(0xff30C083),
-                                    width: 2,
-                                  ),
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _isPasswordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: _isPasswordVisible
-                                        ? Color(0xff30C083)
-                                        : null,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isPasswordVisible = !_isPasswordVisible;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: GestureDetector(
-                              onTap: () {
-                                login();
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff30C083),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    isLoading ? 'Masuk...' : 'Masuk',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LupaSandiPage()),
-                              );
-                            },
-                            child: Text(
-                              "Lupa Password ?",
+            SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  children: [
+                    SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        width: 600,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Masuk',
                               style: TextStyle(
-                                color: const Color(0xff30C083),
+                                fontSize: 40,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          SizedBox(height: 20),
-                        ],
+                            Text(
+                              'Masuklah untuk bisa mengakses seluruh fitur yang ada di Aplikasi.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        width: 600,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 30),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: TextFormField(
+                                controller: nikController,
+                                cursorColor: Color(0xff30C083),
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.credit_card),
+                                  labelText: 'NIK',
+                                  floatingLabelStyle: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(
+                                      color: const Color(0xff30C083),
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: TextFormField(
+                                controller: passwordController,
+                                cursorColor: Color(0xff30C083),
+                                obscureText: !_isPasswordVisible,
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.lock),
+                                  labelText: 'Password',
+                                  floatingLabelStyle: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(
+                                      color: const Color(0xff30C083),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _isPasswordVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: _isPasswordVisible
+                                          ? Color(0xff30C083)
+                                          : null,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isPasswordVisible =
+                                            !_isPasswordVisible;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: GestureDetector(
+                                onTap: () {
+                                  login();
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff30C083),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Text(
+                                      isLoading ? 'Masuk...' : 'Masuk',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LupaSandiPage()),
+                                );
+                              },
+                              child: Text(
+                                "Lupa Password ?",
+                                style: TextStyle(
+                                  color: const Color(0xff30C083),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
