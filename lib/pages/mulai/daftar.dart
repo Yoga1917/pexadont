@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/mulai/login.dart';
 import 'package:pexadont/pages/mulai/start_page.dart';
 import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';
@@ -400,8 +401,8 @@ class _DaftarPageState extends State<DaftarPage> {
                                   if (pickedDate != null) {
                                     setState(() {
                                       tanggalLahirController.text =
-                                          "${pickedDate.toLocal()}"
-                                              .split(' ')[0];
+                                          DateFormat('dd MMMM yyyy', 'id_ID')
+                                              .format(pickedDate);
                                     });
                                   }
                                 },
@@ -417,7 +418,7 @@ class _DaftarPageState extends State<DaftarPage> {
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
-                                      color: const Color(0xff30C083),
+                                      color: Color(0xff30C083),
                                       width: 2,
                                     ),
                                   ),
