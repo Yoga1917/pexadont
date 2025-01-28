@@ -11,8 +11,44 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
   final TextEditingController _nikController = TextEditingController();
   String? nama;
   String? whatsapp;
+  bool isLoadingCek = false;
+  bool isLoadingReset = false;
 
   void _cekNIK() async {
+    setState(() {
+      isLoadingCek = true;
+    });
+
+    if (_nikController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Harap isi data NIK!')),
+      );
+      setState(() {
+        isLoadingCek = false;
+      });
+      return;
+    }
+
+    if (_nikController.text.length < 16) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('NIK harus 16 digit angka!')),
+      );
+      setState(() {
+        isLoadingCek = false;
+      });
+      return;
+    }
+
+    if (int.tryParse(_nikController.text) == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data NIK harus berupa angka!')),
+      );
+      setState(() {
+        isLoadingCek = false;
+      });
+      return;
+    }
+
     final request = await http.get(
       Uri.parse(
           'https://pexadont.agsa.site/api/warga/edit/${_nikController.text}'),
@@ -20,6 +56,11 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
     );
 
     final response = jsonDecode(request.body);
+
+    setState(() {
+      isLoadingCek = false;
+    });
+
     if (response["status"] == 200) {
       setState(() {
         nama = response["data"]["nama"];
@@ -27,12 +68,16 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Data warga tidak ditemukan')),
+        SnackBar(content: Text('Data warga tidak ditemukan.')),
       );
     }
   }
 
   void _resetPassword() async {
+    setState(() {
+      isLoadingReset = true;
+    });
+
     final request = await http.get(
       Uri.parse(
           'https://pexadont.agsa.site/api/password/reset?nik=${_nikController.text}'),
@@ -40,6 +85,11 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
     );
 
     final response = jsonDecode(request.body);
+
+    setState(() {
+      isLoadingReset = false;
+    });
+
     if (response["status"] == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response["data"])),
@@ -102,7 +152,9 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
                     SizedBox(height: 20),
                     GestureDetector(
                       onTap: () {
-                        _cekNIK();
+                        if (!isLoadingCek) {
+                          _cekNIK();
+                        }
                       },
                       child: Container(
                         width: double.infinity,
@@ -113,8 +165,8 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(15),
-                          child: const Text(
-                            'Cek NIK',
+                          child: Text(
+                            isLoadingCek ? 'Cek NIK...' : 'Cek NIK',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
@@ -149,18 +201,22 @@ class _LupaSandiPageState extends State<LupaSandiPage> {
                             ),
                             SizedBox(height: 15),
                             GestureDetector(
-                              onTap: () => _resetPassword(),
+                              onTap: () {
+                                if (!isLoadingReset) {
+                                  _resetPassword();
+                                }
+                              },
                               child: Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: const Color(0xff30C083),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(15),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
                                   child: Text(
-                                    'Konfirmasi',
-                                    style: TextStyle(
+                                    isLoadingReset ? 'Merubah...' : 'Konfirmasi',
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w900,
                                       fontSize: 18,
