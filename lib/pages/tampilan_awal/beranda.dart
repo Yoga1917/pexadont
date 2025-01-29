@@ -1,18 +1,19 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pexadont/pages/beranda/datawarga.dart';
 import 'package:pexadont/pages/beranda/fasilitas.dart';
 import 'package:pexadont/pages/beranda/kas.dart';
 import 'package:pexadont/pages/beranda/kegiatan.dart';
+import 'package:pexadont/pages/beranda/kegiatan_bulanan.dart';
 import 'package:pexadont/pages/beranda/pengaduan.dart';
 import 'package:pexadont/pages/beranda/pengurus.dart';
 import 'package:pexadont/pages/beranda/pesan_pengaduan.dart';
-import 'package:pexadont/pages/beranda/kegiatan_bulanan.dart';
 import 'package:pexadont/widget/custom_category_container.dart';
 import 'package:pexadont/widget/custom_category_container_tablet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   @override
@@ -48,15 +49,37 @@ class _MyHomePageState extends State<HomePage> {
         DateFormat("MMMM yyyy", "id_ID").format(DateTime.now());
 
     final List<dynamic> data = response["data"];
+
     final currentMonthData = data.firstWhere(
       (item) => item["bulan"] == currentMonth,
       orElse: () => null,
     );
 
-    setState(() {
-      rkbBulan = currentMonthData['bulan'];
-      rkbKegiatan = currentMonthData['data'];
-    });
+    if (currentMonthData != null) {
+      List<dynamic> kegiatan = currentMonthData['data'] ?? [];
+
+      kegiatan.sort((a, b) {
+        try {
+          String tglA = a['tgl'] ?? '';
+          String tglB = b['tgl'] ?? '';
+
+          if (tglA.isNotEmpty && tglB.isNotEmpty) {
+            DateTime? dateA = DateTime.tryParse(tglA);
+            DateTime? dateB = DateTime.tryParse(tglB);
+
+            if (dateA != null && dateB != null) {
+              return dateA.compareTo(dateB);
+            }
+          }
+        } catch (e) {}
+        return 0;
+      });
+
+      setState(() {
+        rkbBulan = currentMonthData['bulan'];
+        rkbKegiatan = kegiatan;
+      });
+    }
   }
 
   String formatTgl(String tgl) {

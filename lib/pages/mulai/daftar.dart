@@ -45,6 +45,18 @@ class _DaftarPageState extends State<DaftarPage> {
     }
   }
 
+  String convertToApiDateFormat(String date) {
+    try {
+      final DateFormat inputFormat = DateFormat('dd MMMM yyyy', 'id_ID');
+      final DateTime dateTime = inputFormat.parse(date);
+
+      final DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+      return outputFormat.format(dateTime);
+    } catch (e) {
+      return "";
+    }
+  }
+
   void _submitData() {
     setState(() {
       buttonText = 'Mendaftar...';
@@ -126,7 +138,8 @@ class _DaftarPageState extends State<DaftarPage> {
           'POST', Uri.parse('https://pexadont.agsa.site/api/warga/simpan'));
       request.fields['nik'] = nikController.text;
       request.fields['nama'] = namaController.text;
-      request.fields['tgl_lahir'] = tanggalLahirController.text;
+      request.fields['tgl_lahir'] =
+          convertToApiDateFormat(tanggalLahirController.text);
       request.fields['jenis_kelamin'] = jenisKelaminController.text;
       request.fields['no_rumah'] = nomorRumahController.text;
       request.fields['no_wa'] = nomorTeleponController.text;

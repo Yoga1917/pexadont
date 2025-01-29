@@ -32,10 +32,49 @@ class _KegiatanBulananPageState extends State<KegiatanBulananPage> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        setState(() {
-          rkbData = responseData['data'];
-          isLoading = false;
-        });
+        List<dynamic> rkbList = responseData['data'];
+
+        if (rkbList.isNotEmpty) {
+          rkbList.forEach((bulanData) {
+            List<dynamic> dataKegiatan = bulanData['data'] ?? [];
+
+            dataKegiatan.forEach((item) {
+              String tgl = item['tgl'] ?? '';
+
+              if (tgl.isNotEmpty) {
+                DateTime? date = DateTime.tryParse(tgl);
+                if (date == null) {}
+              }
+            });
+          });
+
+          rkbList.forEach((bulanData) {
+            List<dynamic> dataKegiatan = bulanData['data'] ?? [];
+            dataKegiatan.sort((a, b) {
+              try {
+                String tglA = a['tgl'] ?? '';
+                String tglB = b['tgl'] ?? '';
+
+                if (tglA.isNotEmpty && tglB.isNotEmpty) {
+                  DateTime? dateA = DateTime.tryParse(tglA);
+                  DateTime? dateB = DateTime.tryParse(tglB);
+
+                  if (dateA != null && dateB != null) {
+                    return dateA.compareTo(dateB);
+                  }
+                }
+              } catch (e) {}
+              return 0;
+            });
+          });
+
+          setState(() {
+            rkbData = rkbList;
+            isLoading = false;
+          });
+        } else {
+          showSnackbar('Data kegiatan tidak ditemukan');
+        }
       } else {
         showSnackbar('Gagal memuat kegiatan bulanan');
       }
