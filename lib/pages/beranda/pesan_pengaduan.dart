@@ -30,32 +30,58 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final nik = prefs.getString('nik');
 
-    final request = await http.get(
-        Uri.parse("https://pexadont.agsa.site/api/pengaduan/warga/${nik}"));
-    final dataRaw = json.decode(request.body)['data'];
-    final data = dataRaw.where((item) => item['balasan'] != null).toList();
+    final request = await http
+        .get(Uri.parse("https://pexadont.agsa.site/api/pengaduan/warga/$nik"));
 
-    data.sort((a, b) {
-      final tglA = DateTime.parse(a['tgl']);
-      final tglB = DateTime.parse(b['tgl']);
-      return tglB.compareTo(tglA);
-    });
+    if (request.statusCode == 200) {
+      final responseBody = json.decode(request.body);
 
-    final updatedData = data.map((item) {
-      item['fotoAksiBy'] = item['fotoAksiBy'] != null
-          ? "https://pexadont.agsa.site/uploads/warga/${item['fotoAksiBy']}"
-          : null;
+      if (responseBody['status'] == 200) {
+        final dataRaw = responseBody['data'];
 
-      return item;
-    }).toList();
+        // Filter hanya yang memiliki balasan
+        final data = dataRaw.where((item) => item['balasan'] != null).toList();
 
+        // Urutkan berdasarkan tanggal terbaru
+        data.sort((a, b) {
+          final tglA = DateTime.parse(a['tgl']);
+          final tglB = DateTime.parse(b['tgl']);
+          return tglB.compareTo(tglA);
+        });
+
+        // Update URL fotoAksiBy jika ada
+        final updatedData = data.map((item) {
+          return {
+            ...item,
+            'fotoAksiBy': (item['fotoAksiBy'] != null &&
+                    item['fotoAksiBy'].isNotEmpty)
+                ? "https://pexadont.agsa.site/uploads/warga/${item['fotoAksiBy']}"
+                : null,
+          };
+        }).toList();
+
+        setState(() {
+          pengaduanData = updatedData;
+          filteredPesanList = updatedData;
+          formattedTotalPesanPengaduan =
+              NumberFormat.decimalPattern('id').format(pengaduanData.length);
+          isLoading = false;
+        });
+      } else {
+        _showError("Gagal mengambil data: ${responseBody['message']}");
+      }
+    } else {
+      _showError("Terjadi kesalahan saat mengambil data.");
+    }
+  }
+
+  void _showError(String message) {
     setState(() {
-      pengaduanData = updatedData;
-      filteredPesanList = data;
-      formattedTotalPesanPengaduan =
-          NumberFormat.decimalPattern('id').format(pengaduanData.length);
       isLoading = false;
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   void searchPesan(String query) {

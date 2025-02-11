@@ -40,9 +40,27 @@ class _PengaduanPageState extends State<PengaduanPage> {
         final data = response['data'];
 
         data.sort((a, b) {
-          final tglA = DateTime.parse(a['tgl']);
-          final tglB = DateTime.parse(b['tgl']);
-          return tglB.compareTo(tglA);
+          // Pastikan nilai 'tgl' tidak null
+          if (a['tgl'] == null || b['tgl'] == null) return 0;
+
+          // Konversi tanggal ke DateTime
+          final tglA = DateTime.tryParse(a['tgl']);
+          final tglB = DateTime.tryParse(b['tgl']);
+
+          // Jika parsing gagal, jangan ubah urutan
+          if (tglA == null || tglB == null) return 0;
+
+          // Urutkan berdasarkan tanggal (terbaru ke terlama)
+          int compareDate = tglB.compareTo(tglA);
+
+          // Jika tanggal sama, urutkan berdasarkan id_pengaduan (terbaru ke lama)
+          if (compareDate == 0) {
+            int idA = int.tryParse(a['id_pengaduan'].toString()) ?? 0;
+            int idB = int.tryParse(b['id_pengaduan'].toString()) ?? 0;
+            return idB.compareTo(idA);
+          }
+
+          return compareDate;
         });
 
         final updatedData = data.map((item) {

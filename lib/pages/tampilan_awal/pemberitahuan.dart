@@ -17,8 +17,6 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
   bool isSearching = false;
   bool isLoading = true;
   List<bool> isExpanded = [];
-  String? aksiBy;
-  String? fotoAksiBy;
 
   @override
   void initState() {
@@ -36,20 +34,41 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
         pemberitahuanList = (data['data'] as List)
             .map(
               (item) => {
-                'pemberitahuan': item['pemberitahuan'],
+                'id_pemberitahuan': item['id_pemberitahuan']?.toString() ?? "0",
                 'deskripsi': item['deskripsi'],
-                'tgl': item['tgl'],
+                'tgl': item['tgl']?.toString() ?? '',
                 'file': item['file'] != null && item['file'].isNotEmpty
                     ? 'https://pexadont.agsa.site/uploads/pemberitahuan/${item['file']}'
                     : null,
+                'aksiBy': item['aksiBy'],
+                'fotoAksiBy': item['fotoAksiBy'],
                 'isExpanded': false,
               },
             )
             .toList();
+
+        pemberitahuanList.sort((a, b) {
+          String tglA = a['tgl'] ?? '';
+          String tglB = b['tgl'] ?? '';
+
+          DateTime dateA = DateTime.parse(tglA);
+          DateTime dateB = DateTime.parse(tglB);
+
+          int dateComparison = dateB.compareTo(dateA);
+          if (dateComparison == 0) {
+            String idA = a['id_pemberitahuan'] ?? "0";
+            String idB = b['id_pemberitahuan'] ?? "0";
+
+            int idAInt = int.tryParse(idA) ?? 0;
+            int idBInt = int.tryParse(idB) ?? 0;
+
+            return idBInt.compareTo(idAInt);
+          }
+          return dateComparison;
+        });
+
         filteredPemberitahuanList = pemberitahuanList;
         isLoading = false;
-        aksiBy = data['aksiBy'];
-        fotoAksiBy = data['fotoAksiBy'];
       });
     } else {
       throw Exception('Failed to load data: ${response.statusCode}');
@@ -267,7 +286,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                                                           10),
                                                               child:
                                                                   Image.network(
-                                                                'https://pexadont.agsa.site/uploads/warga/$fotoAksiBy',
+                                                                'https://pexadont.agsa.site/uploads/warga/${pemberitahuan['fotoAksiBy']}',
                                                                 fit: BoxFit
                                                                     .cover,
                                                                 width: double
@@ -282,7 +301,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                                       radius: 10,
                                                       backgroundImage:
                                                           NetworkImage(
-                                                        'https://pexadont.agsa.site/uploads/warga/$fotoAksiBy',
+                                                        'https://pexadont.agsa.site/uploads/warga/${pemberitahuan['fotoAksiBy']}',
                                                       ),
                                                     ),
                                                   ),
@@ -290,7 +309,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                                     width: 10,
                                                   ),
                                                   Text(
-                                                    aksiBy!,
+                                                    '${pemberitahuan['aksiBy']}',
                                                   ),
                                                 ],
                                               ),

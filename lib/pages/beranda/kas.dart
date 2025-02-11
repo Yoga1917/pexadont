@@ -18,7 +18,6 @@ class _KasPageState extends State<KasPage> {
   List<dynamic> kasData = [];
   List<dynamic> kasSaldo = [];
   bool isLoading = true;
-  String? aksiBy;
   int saldoKas = 0;
   int sisaDana = 0;
   int totalIncome = 0;
@@ -38,8 +37,6 @@ class _KasPageState extends State<KasPage> {
           ? 'https://pexadont.agsa.site/api/kas'
           : 'https://pexadont.agsa.site/api/kas?tahun=${selectedYear}';
 
-      print('Fetching data from: $url'); // Log URL
-
       final response = await http.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
@@ -58,7 +55,6 @@ class _KasPageState extends State<KasPage> {
 
           perhitunganTotal();
           isLoading = false;
-          aksiBy = responseData['aksiBy'];
         });
       } else {
         showSnackbar('Gagal memuat data kas');
@@ -246,7 +242,8 @@ class _KasPageState extends State<KasPage> {
                                       return KartuLaporan(
                                         month:
                                             kas['bulan'] + " " + kas['tahun'],
-                                        aksiBy: aksiBy!,
+                                        aksiBy: '${kas['aksiBy']}',
+                                        fotoAksiBy: '${kas['fotoAksiBy']}',
                                         income: rupiah(kas['pemasukan'] ?? 0),
                                         expense:
                                             rupiah(kas['pengeluaran'] ?? 0),
