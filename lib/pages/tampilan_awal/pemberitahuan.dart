@@ -30,11 +30,13 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      print('Data dari api: $data');
       setState(() {
         pemberitahuanList = (data['data'] as List)
             .map(
               (item) => {
                 'id_pemberitahuan': item['id_pemberitahuan']?.toString() ?? "0",
+                'pemberitahuan': item['pemberitahuan'],
                 'deskripsi': item['deskripsi'],
                 'tgl': item['tgl']?.toString() ?? '',
                 'file': item['file'] != null && item['file'].isNotEmpty
