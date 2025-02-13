@@ -434,7 +434,7 @@ class _PesanPengaduanPageState extends State<PesanPengaduanPage> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          "${pengaduan['aksiBy']} :",
+                                                          "${pengaduan['aksiBy']} (${pengaduan['jabatanAksiBy']}) :",
                                                           style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight

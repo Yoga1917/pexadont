@@ -311,7 +311,7 @@ class _MyPemberitahuanPageState extends State<PemberitahuanPage> {
                                                     width: 10,
                                                   ),
                                                   Text(
-                                                    '${pemberitahuan['aksiBy']}',
+                                                    '${pemberitahuan['aksiBy']} (Sekretaris)',
                                                   ),
                                                 ],
                                               ),

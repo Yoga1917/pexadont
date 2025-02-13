@@ -242,7 +242,7 @@ class _KasPageState extends State<KasPage> {
                                       return KartuLaporan(
                                         month:
                                             kas['bulan'] + " " + kas['tahun'],
-                                        aksiBy: '${kas['aksiBy']}',
+                                        aksiBy: '${kas['aksiBy']} (Bendahara)',
                                         fotoAksiBy: '${kas['fotoAksiBy']}',
                                         income: rupiah(kas['pemasukan'] ?? 0),
                                         expense:
