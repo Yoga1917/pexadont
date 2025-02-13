@@ -91,8 +91,8 @@ class _TentangAplikasiPageState extends State<TentangAplikasiPage> {
                           horizontal: 20, vertical: 20),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          'https://placehold.co/300x300.png',
+                        child: Image.asset(
+                          'assets/pexadont.png',
                           fit: BoxFit.cover,
                           width: double.infinity,
                         ),
