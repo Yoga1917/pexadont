@@ -47,6 +47,9 @@ class MyApp extends StatelessWidget {
             borderSide: BorderSide(color: Color(0xff30C083)),
           ),
         ),
+        progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: Color(0xff30C083),
+        ),
       ),
     );
   }

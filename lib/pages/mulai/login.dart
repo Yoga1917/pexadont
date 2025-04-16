@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         if (data['data']['status'] == "1") {
-          _saveLoginInfo(data['data']['nama'], data['data']['nik']);
+          _saveLoginInfo(data['data']['nama'], data['data']['nik'], data['data']['no_kk']);
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Login berhasil")),
@@ -104,11 +104,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> _saveLoginInfo(String nama, String nik) async {
+  Future<void> _saveLoginInfo(String nama, String nik, String no_kk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
     await prefs.setString('nama', nama);
     await prefs.setString('nik', nik);
+    await prefs.setString('no_kk', no_kk);
   }
 
   @override

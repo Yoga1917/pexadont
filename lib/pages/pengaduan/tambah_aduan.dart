@@ -111,6 +111,17 @@ class _TambahAduanPageState extends State<TambahAduanPage> {
         ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PengaduanPage(),
+              ),
+            );
+          },
+        ),
       ),
       body: GestureDetector(
         onTap: () {

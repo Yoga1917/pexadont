@@ -166,88 +166,90 @@ class _DataWargaPageState extends State<DataWargaPage> {
                   ),
                   SizedBox(height: 20),
                   Expanded(
-                      child: filteredWargaList.isEmpty
-                          ? Center(child: Text('Data tidak ditemukan.'))
-                          : ListView.builder(
-                              itemCount: filteredWargaList.length,
-                              itemBuilder: (context, index) {
-                                final warga = filteredWargaList[index];
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Container(
-                                    margin: EdgeInsets.only(bottom: 20),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 1,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: Image.network(
-                                              (warga['foto'] != null)
-                                                  ? 'https://pexadont.agsa.site/uploads/warga/${warga['foto']}'
-                                                  : 'https://placehold.co/300x300.png',
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                warga['nama'] ?? 'Unknown Name',
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(height: 5),
-                                              Text(
-                                                'Nik : ${warga['nik']}',
-                                              ),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                'Tanggal Lahir : ${formatDate(warga['tgl_lahir'])}',
-                                              ),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                'Jenis Kelamin : ${warga['jenis_kelamin']}',
-                                              ),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                'No. Rumah : ${warga['no_rumah']}',
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                    child: filteredWargaList.isEmpty
+                        ? Center(child: Text('Data tidak ditemukan.'))
+                        : ListView.builder(
+                            itemCount: filteredWargaList.length,
+                            itemBuilder: (context, index) {
+                              final warga = filteredWargaList[index];
+                              return Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 1,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
                                   ),
-                                );
-                              })),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: Image.network(
+                                            (warga['foto'] != null)
+                                                ? 'https://pexadont.agsa.site/uploads/warga/${warga['foto']}'
+                                                : 'https://placehold.co/300x300.png',
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              warga['nama'] ?? 'Unknown Name',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              'Nik : ${warga['nik']}',
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              'Tanggal Lahir : ${formatDate(warga['tgl_lahir'])}',
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              'Jenis Kelamin : ${warga['jenis_kelamin']}',
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              'No. Rumah : ${warga['no_rumah']}',
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
                 ],
               ),
       ),
