@@ -7,12 +7,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:pexadont/pages/daftar/pilih_lokasi.dart';
+import 'package:pexadont/pages/lokasi_maps.dart';
 import 'package:pexadont/pages/mulai/login.dart';
 import 'package:pexadont/pages/mulai/start_page.dart';
 import 'package:pexadont/pages/pengaturan/kebijakan_privasi.dart';
 import 'package:pexadont/pages/pengaturan/syarat.dart';
-import 'package:latlong2/latlong.dart';
 
 class DaftarPage extends StatefulWidget {
   @override
@@ -26,8 +27,7 @@ class _DaftarPageState extends State<DaftarPage> {
   final _formKey4 = GlobalKey<FormState>();
 
   String? _noRumah;
-  String? _latitude;
-  String? _longitude;
+  String? _peta;
   String buttonText = 'Daftar';
   String? statusKeluarga;
   String? selectedJob;
@@ -36,6 +36,7 @@ class _DaftarPageState extends State<DaftarPage> {
 
   final TextEditingController nikController = TextEditingController();
   final TextEditingController noKKController = TextEditingController();
+  final TextEditingController noKKAnggota = TextEditingController();
   final TextEditingController namaController = TextEditingController();
   final TextEditingController jenisKelaminController = TextEditingController();
   final TextEditingController tempatLahirController = TextEditingController();
@@ -64,6 +65,8 @@ class _DaftarPageState extends State<DaftarPage> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isExpanded = false;
+  bool _isKKChecked = false;
+  bool _isLoading = false;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -310,44 +313,72 @@ class _DaftarPageState extends State<DaftarPage> {
   }
 
   void _cekNoKK() async {
-    if (noKKController.text.isEmpty) {
+    if (noKKAnggota.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Harap isi data No KK!')),
       );
       return;
     }
 
-    if (noKKController.text.length < 16) {
+    if (noKKAnggota.text.length < 16) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No KK harus 16 digit angka!')),
       );
       return;
     }
 
-    if (int.tryParse(noKKController.text) == null) {
+    if (int.tryParse(noKKAnggota.text) == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Data No KK harus berupa angka!')),
       );
       return;
     }
 
-    final request = await http.get(
-      Uri.parse(
-          'https://pexadont.agsa.site/api/keluarga/edit/${noKKController.text}'),
-      headers: {'Content-Type': 'application/json'},
-    );
+    setState(() {
+      _isLoading = true;
+    });
 
-    final response = jsonDecode(request.body);
+    try {
+      final request = await http.get(
+        Uri.parse(
+            'https://pexadont.agsa.site/api/keluarga/edit/${noKKAnggota.text}'),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    if (response["status"] == 200) {
+      final response = jsonDecode(request.body);
+
+      if (response["status"] == 200) {
+        setState(() {
+          _isKKChecked = true;
+          _noRumah = response["data"]["no_rumah"];
+          _peta = response["data"]["latitude"] != null &&
+                  response["data"]["longitude"] != null
+              ? "${response["data"]["latitude"]}, ${response["data"]["longitude"]}"
+              : 'Lokasi tidak tersedia';
+          ;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Data KK ditemukan!')),
+        );
+      } else {
+        setState(() {
+          _isKKChecked = false;
+          _noRumah = null;
+          _peta = null;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Data KK tidak ditemukan!')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan: ${e.toString()}')),
+      );
+    } finally {
       setState(() {
-        _noRumah = response["data"]["no_rumah"];
-        _latitude = response["data"]["latitude"];
-        _longitude = response["data"]["longitude"];
-      });
-    } else {
-      setState(() {
-        _noRumah = null;
+        _isLoading = false;
       });
     }
   }
@@ -590,9 +621,9 @@ class _DaftarPageState extends State<DaftarPage> {
                                                 : SizedBox(),
                                             statusKeluarga == "Kepala Keluarga"
                                                 ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 20),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 20),
                                                     child: TextFormField(
                                                       controller:
                                                           noKKController,
@@ -629,8 +660,7 @@ class _DaftarPageState extends State<DaftarPage> {
                                                 : Column(
                                                     children: [
                                                       TextFormField(
-                                                        controller:
-                                                            noKKController,
+                                                        controller: noKKAnggota,
                                                         decoration:
                                                             InputDecoration(
                                                           prefixIcon:
@@ -665,216 +695,299 @@ class _DaftarPageState extends State<DaftarPage> {
                                                         ),
                                                       ),
                                                       SizedBox(height: 20),
-                                                      GestureDetector(
-                                                        onTap: _cekNoKK,
-                                                        child: Container(
-                                                          width:
-                                                              double.infinity,
-                                                          height: 55,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: const Color(
-                                                                0xff30C083),
+                                                      _isLoading
+                                                          ? Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                          20),
+                                                              child:
+                                                                  CircularProgressIndicator(),
+                                                            )
+                                                          : _isKKChecked
+                                                              ? SizedBox()
+                                                              : GestureDetector(
+                                                                  onTap:
+                                                                      _cekNoKK,
+                                                                  child:
+                                                                      Container(
+                                                                    margin: EdgeInsets.only(
+                                                                        bottom:
+                                                                            20),
+                                                                    width: double
+                                                                        .infinity,
+                                                                    height: 55,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: const Color(
+                                                                          0xff30C083),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              10),
+                                                                    ),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          15),
+                                                                      child:
+                                                                          Text(
+                                                                        'Cek KK',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontWeight:
+                                                                              FontWeight.w900,
+                                                                          fontSize:
+                                                                              18,
+                                                                        ),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                    ],
+                                                  ),
+                                            statusKeluarga == "Kepala Keluarga"
+                                                ? TextFormField(
+                                                    controller:
+                                                        nomorRumahController,
+                                                    decoration: InputDecoration(
+                                                      prefixIcon: const Icon(
+                                                          Icons.home),
+                                                      labelText: 'Nomor Rumah',
+                                                      floatingLabelStyle:
+                                                          const TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            const BorderSide(
+                                                          color: const Color(
+                                                              0xff30C083),
+                                                          width: 2,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : _isKKChecked
+                                                    ? TextFormField(
+                                                        initialValue: _noRumah,
+                                                        readOnly: true,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          prefixIcon:
+                                                              const Icon(
+                                                                  Icons.home),
+                                                          labelText:
+                                                              'Nomor Rumah',
+                                                          floatingLabelStyle:
+                                                              const TextStyle(
+                                                            color: Colors.black,
+                                                          ),
+                                                          border:
+                                                              OutlineInputBorder(
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
                                                                         10),
                                                           ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(15),
-                                                            child: Text(
-                                                              'Cek KK',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w900,
-                                                                fontSize: 18,
-                                                              ),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
+                                                          focusedBorder:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            borderSide:
+                                                                const BorderSide(
+                                                              color: const Color(
+                                                                  0xff30C083),
+                                                              width: 2,
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                            SizedBox(height: 20),
+                                                      )
+                                                    : SizedBox(),
                                             statusKeluarga == "Kepala Keluarga"
-                                                ? TextFormField(
-                                                    controller:
-                                                        nomorRumahController,
-                                                    decoration: InputDecoration(
-                                                      prefixIcon: const Icon(
-                                                          Icons.home),
-                                                      labelText: 'Nomor Rumah',
-                                                      floatingLabelStyle:
-                                                          const TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                      border:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                          color: const Color(
-                                                              0xff30C083),
-                                                          width: 2,
+                                                ? Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 20),
+                                                    child: TextFormField(
+                                                      controller:
+                                                          lokasiController,
+                                                      readOnly: true,
+                                                      onTap: () async {
+                                                        final result =
+                                                            await Navigator
+                                                                .push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  PilihLokasi()),
+                                                        );
+
+                                                        if (result != null &&
+                                                            result is LatLng) {
+                                                          setState(() {
+                                                            lokasiController
+                                                                    .text =
+                                                                "${result.latitude}, ${result.longitude}";
+                                                          });
+                                                        }
+                                                      },
+                                                      decoration:
+                                                          InputDecoration(
+                                                        prefixIcon: const Icon(
+                                                            Icons.location_on),
+                                                        labelText:
+                                                            'Lokasi Maps Rumah',
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        floatingLabelStyle:
+                                                            const TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          borderSide:
+                                                              const BorderSide(
+                                                            color: const Color(
+                                                                0xff30C083),
+                                                            width: 2,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   )
-                                                : TextFormField(
-                                                    controller:
-                                                        nomorRumahController,
-                                                    readOnly: true,
-                                                    decoration: InputDecoration(
-                                                      prefixIcon: const Icon(
-                                                          Icons.home),
-                                                      labelText: 'Nomor Rumah',
-                                                      floatingLabelStyle:
-                                                          const TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                      border:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                          color: const Color(
-                                                              0xff30C083),
-                                                          width: 2,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                            SizedBox(height: 20),
-                                            statusKeluarga == "Kepala Keluarga"
-                                                ? TextFormField(
-                                                    controller:
-                                                        lokasiController,
-                                                    readOnly: true,
-                                                    onTap: () async {
-                                                      final result =
-                                                          await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                PilihLokasi()),
-                                                      );
+                                                : _isKKChecked
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 20),
+                                                        child: TextFormField(
+                                                          initialValue: _peta,
+                                                          readOnly: true,
+                                                          onTap: () {
+                                                            if (_peta == null ||
+                                                                _peta ==
+                                                                    'Lokasi tidak tersedia') {
+                                                              ScaffoldMessenger
+                                                                      .of(context)
+                                                                  .showSnackBar(
+                                                                SnackBar(
+                                                                    content: Text(
+                                                                        'Lokasi tidak tersedia')),
+                                                              );
+                                                              return;
+                                                            }
 
-                                                      if (result != null &&
-                                                          result is LatLng) {
-                                                        setState(() {
-                                                          lokasiController
-                                                                  .text =
-                                                              "${result.latitude}, ${result.longitude}";
-                                                        });
-                                                      }
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      prefixIcon: const Icon(
-                                                          Icons.location_on),
-                                                      labelText:
-                                                          'Lokasi Maps Rumah',
-                                                      border:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      floatingLabelStyle:
-                                                          const TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                          color: const Color(
-                                                              0xff30C083),
-                                                          width: 2,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : TextFormField(
-                                                    controller:
-                                                        lokasiController,
-                                                    readOnly: true,
-                                                    onTap: () async {
-                                                      final result =
-                                                          await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                PilihLokasi()),
-                                                      );
+                                                            final coords =
+                                                                _peta!.split(
+                                                                    ', ');
+                                                            if (coords.length !=
+                                                                2) {
+                                                              ScaffoldMessenger
+                                                                      .of(context)
+                                                                  .showSnackBar(
+                                                                SnackBar(
+                                                                    content: Text(
+                                                                        'Format lokasi tidak valid')),
+                                                              );
+                                                              return;
+                                                            }
 
-                                                      if (result != null &&
-                                                          result is LatLng) {
-                                                        setState(() {
-                                                          lokasiController
-                                                                  .text =
-                                                              "${result.latitude}, ${result.longitude}";
-                                                        });
-                                                      }
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      prefixIcon: const Icon(
-                                                          Icons.location_on),
-                                                      labelText:
-                                                          'Klik untuk lihat peta',
-                                                      hintText:
-                                                          'Klik untuk lihat peta',
-                                                      border:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      floatingLabelStyle:
-                                                          const TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                          color:
-                                                              Color(0xff30C083),
-                                                          width: 2,
+                                                            final lat =
+                                                                double.tryParse(
+                                                                    coords[0]);
+                                                            final lng =
+                                                                double.tryParse(
+                                                                    coords[1]);
+
+                                                            if (lat == null ||
+                                                                lng == null) {
+                                                              ScaffoldMessenger
+                                                                      .of(context)
+                                                                  .showSnackBar(
+                                                                SnackBar(
+                                                                    content: Text(
+                                                                        'Koordinat tidak valid')),
+                                                              );
+                                                              return;
+                                                            }
+
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        LokasiMapPage(
+                                                                  latitude: lat,
+                                                                  longitude:
+                                                                      lng,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          decoration:
+                                                              InputDecoration(
+                                                            prefixIcon:
+                                                                const Icon(Icons
+                                                                    .location_on),
+                                                            labelText:
+                                                                'Klik untuk lihat peta',
+                                                            hintText:
+                                                                'Klik untuk lihat peta',
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            floatingLabelStyle:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                            focusedBorder:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                color: Color(
+                                                                    0xff30C083),
+                                                                width: 2,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                            SizedBox(height: 20),
+                                                      )
+                                                    : SizedBox(),
                                           ])),
                                     ),
                                   ],
