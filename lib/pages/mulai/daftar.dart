@@ -1032,32 +1032,67 @@ class _DaftarPageState extends State<DaftarPage> {
                                           key: _formKey2,
                                           child: Column(children: [
                                             SizedBox(height: 5),
-                                            TextFormField(
-                                              controller: nikController,
-                                              decoration: InputDecoration(
-                                                prefixIcon: const Icon(
-                                                    Icons.badge_rounded),
-                                                labelText: 'NIK',
-                                                floatingLabelStyle:
-                                                    const TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: const BorderSide(
-                                                    color:
-                                                        const Color(0xff30C083),
-                                                    width: 2,
+                                            statusKeluarga == "Kepala Keluarga"
+                                                ? TextFormField(
+                                                    controller: nikController,
+                                                    decoration: InputDecoration(
+                                                      prefixIcon: const Icon(
+                                                          Icons.badge_rounded),
+                                                      labelText: 'NIK',
+                                                      floatingLabelStyle:
+                                                          const TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            const BorderSide(
+                                                          color: const Color(
+                                                              0xff30C083),
+                                                          width: 2,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : TextFormField(
+                                                    controller: nikController,
+                                                    decoration: InputDecoration(
+                                                      prefixIcon: const Icon(
+                                                          Icons.badge_rounded),
+                                                      labelText: 'Pilih NIK',
+                                                      floatingLabelStyle:
+                                                          const TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        borderSide:
+                                                            const BorderSide(
+                                                          color: const Color(
+                                                              0xff30C083),
+                                                          width: 2,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            ),
                                             SizedBox(height: 20),
                                             TextFormField(
                                               controller: namaController,
